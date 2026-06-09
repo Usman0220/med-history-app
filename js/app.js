@@ -224,6 +224,10 @@ function printSummary() {
   window.print();
 }
 
+function savePDF() {
+  window.print();
+}
+
 function resetApp() {
   currentSpecialty = null;
   currentStep = 0;
