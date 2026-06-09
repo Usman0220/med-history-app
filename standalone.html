@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedHistory - Medical History Assistant</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f4f8;color:#1a202c;line-height:1.6}
+.app-container{max-width:800px;margin:0 auto;padding:20px}
+header{text-align:center;padding:40px 20px 30px}
+header h1{font-size:2rem;color:#2b6cb0;margin-bottom:4px}
+header p{color:#718096;font-size:1rem}
+.card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 1px 3px rgba(0,0,0,0.1);margin-bottom:20px}
+.card h2{font-size:1.25rem;margin-bottom:16px;color:#2d3748}
+.hidden{display:none!important}
+.specialty-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.specialty-btn{display:flex;flex-direction:column;align-items:center;gap:8px;padding:24px 16px;border:2px solid #e2e8f0;border-radius:12px;background:#fff;cursor:pointer;font-size:1rem;color:#2d3748;transition:all .2s}
+.specialty-btn:hover{border-color:#2b6cb0;background:#ebf8ff;transform:translateY(-2px);box-shadow:0 4px 12px rgba(43,108,176,.15)}
+.specialty-btn .icon{font-size:2rem}
+.progress-container{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.progress-bar{flex:1;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#2b6cb0,#48bb78);border-radius:4px;transition:width .3s}
+#progress-text{font-size:.875rem;color:#718096;white-space:nowrap}
+.step-indicator{display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px}
+.step-dot{display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:20px;font-size:.75rem;background:#e2e8f0;color:#718096;white-space:nowrap;cursor:pointer;transition:all .2s}
+.step-dot.active{background:#2b6cb0;color:#fff}
+.step-dot.completed{background:#48bb78;color:#fff}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-weight:600;margin-bottom:6px;color:#2d3748;font-size:.95rem}
+.form-group .hint{font-size:.8rem;color:#718096;margin-bottom:6px}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:8px;font-size:.95rem;font-family:inherit;transition:border-color .2s;background:#fff}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:#2b6cb0}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-group input[type=checkbox],.form-group input[type=radio]{width:auto;margin-right:8px}
+.checkbox-group,.radio-group{display:flex;flex-direction:column;gap:8px}
+.checkbox-group label,.radio-group label{display:flex;align-items:center;font-weight:400;cursor:pointer}
+.nav-buttons{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
+.btn{padding:12px 24px;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:#2b6cb0;color:#fff}
+.btn-primary:hover:not(:disabled){background:#1a4d7a}
+.btn-secondary{background:#e2e8f0;color:#4a5568}
+.btn-secondary:hover:not(:disabled){background:#cbd5e0}
+.btn-success{background:#48bb78;color:#fff}
+.btn-success:hover:not(:disabled){background:#38a169}
+.summary-actions{display:flex;gap:12px;margin-top:20px}
+#summary-content h3{color:#2b6cb0;margin:16px 0 8px;border-bottom:2px solid #e2e8f0;padding-bottom:4px}
+#summary-content p{margin:4px 0;padding-left:8px}
+@media(max-width:600px){.specialty-grid{grid-template-columns:1fr}.app-container{padding:12px}header h1{font-size:1.5rem}.card{padding:16px}.step-indicator{gap:4px}.step-dot{padding:4px 8px;font-size:.7rem}}
+</style>
+</head>
+<body>
+<div class="app-container">
+<header>
+<h1>MedHistory</h1>
+<p>Step-by-step medical history assistant</p>
+</header>
+
+<div id="specialty-selector" class="card">
+<h2>Select Specialty</h2>
+<div class="specialty-grid">
+<button class="specialty-btn" onclick="startAssessment('surgery')"><span class="icon">🔧</span><span>Surgery</span></button>
+<button class="specialty-btn" onclick="startAssessment('medicine')"><span class="icon">💊</span><span>Medicine</span></button>
+<button class="specialty-btn" onclick="startAssessment('paediatric')"><span class="icon">👶</span><span>Paediatrics</span></button>
+<button class="specialty-btn" onclick="startAssessment('gynaeobs')"><span class="icon">👩</span><span>Gynae / Obstetrics</span></button>
+</div>
+</div>
+
+<div id="assessment-view" class="hidden">
+<div class="progress-container">
+<div id="progress-bar" class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+<span id="progress-text">Step 1 of 10</span>
+</div>
+<div id="step-indicator" class="step-indicator"></div>
+<div id="step-content" class="card"></div>
+<div class="nav-buttons">
+<button id="prev-btn" class="btn btn-secondary" onclick="prevStep()" disabled>Previous</button>
+<button id="next-btn" class="btn btn-primary" onclick="nextStep()">Next</button>
+<button id="submit-btn" class="btn btn-success hidden" onclick="submitAssessment()">Complete</button>
+</div>
+</div>
+
+<div id="summary-view" class="hidden">
+<div class="card">
+<h2>Medical History Summary</h2>
+<div id="summary-content"></div>
+<div class="summary-actions">
+<button class="btn btn-primary" onclick="printSummary()">Print</button>
+<button class="btn btn-secondary" onclick="resetApp()">New Assessment</button>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+const BASE_STEPS = [
+{id:'patient-info',title:'Patient Information',fields:[
+{id:'name',label:'Full Name',type:'text',required:true},
+{id:'age',label:'Age',type:'number',required:true},
+{id:'gender',label:'Gender',type:'select',options:['Male','Female','Other'],required:true},
+{id:'occupation',label:'Occupation',type:'text'},
+{id:'contact',label:'Contact Number',type:'tel'},
+{id:'address',label:'Address',type:'textarea'}
+]},
+{id:'chief-complaint',title:'Chief Complaint',fields:[
+{id:'cc',label:'What is the main problem?',type:'textarea',required:true,hint:'In the patient\'s own words'},
+{id:'duration',label:'How long has this been present?',type:'text',required:true},
+{id:'onset',label:'Onset',type:'select',options:['Sudden','Gradual','Intermittent','Constant']},
+{id:'severity',label:'Severity (1-10)',type:'number',attrs:{min:1,max:10}}
+]},
+{id:'hopi',title:'History of Presenting Illness',fields:[
+{id:'site',label:'Site / Location',type:'text'},
+{id:'character',label:'Character (quality of symptom)',type:'textarea'},
+{id:'radiation',label:'Radiation (does it spread?)',type:'text'},
+{id:'assoc_symptoms',label:'Associated symptoms',type:'textarea'},
+{id:'timing',label:'Timing / frequency',type:'textarea'},
+{id:'exacerbating',label:'What makes it worse?',type:'textarea'},
+{id:'relieving',label:'What makes it better?',type:'textarea'},
+{id:'previous_episodes',label:'Previous similar episodes?',type:'text'},
+{id:'treatment_tried',label:'Any treatment tried?',type:'textarea'}
+]},
+{id:'pmh',title:'Past Medical History',fields:[
+{id:'chronic_dz',label:'Chronic diseases (DM, HTN, Asthma, etc.)',type:'textarea'},
+{id:'hospitalizations',label:'Previous hospitalizations',type:'textarea'},
+{id:'surgeries',label:'Previous surgeries',type:'textarea'},
+{id:'blood_transfusion',label:'Blood transfusion history',type:'text'},
+{id:'allergies',label:'Allergies (drugs, food, etc.)',type:'textarea'},
+{id:'vaccinations',label:'Vaccination status',type:'textarea'}
+]},
+{id:'drug-history',title:'Drug History',fields:[
+{id:'current_meds',label:'Current medications (name, dose, frequency)',type:'textarea'},
+{id:'otc_meds',label:'Over-the-counter / herbal medications',type:'textarea'},
+{id:'adverse_drug',label:'Previous adverse drug reactions',type:'textarea'},
+{id:'adherence',label:'Medication adherence',type:'select',options:['Always','Sometimes','Rarely','Never']}
+]},
+{id:'family-history',title:'Family History',fields:[
+{id:'family_dz',label:'Family diseases (DM, HTN, Cancer, etc.)',type:'textarea'},
+{id:'genetic_disorders',label:'Genetic / hereditary disorders',type:'textarea'},
+{id:'family_mental',label:'Family psychiatric history',type:'textarea'}
+]},
+{id:'social-history',title:'Social History',fields:[
+{id:'smoking',label:'Smoking status',type:'select',options:['Never','Former','Current']},
+{id:'alcohol',label:'Alcohol consumption',type:'select',options:['Never','Occasional','Regular']},
+{id:'substance_use',label:'Recreational drug use',type:'textarea'},
+{id:'diet',label:'Diet / nutrition',type:'textarea'},
+{id:'exercise',label:'Exercise habits',type:'text'},
+{id:'living_situation',label:'Living situation',type:'textarea'}
+]},
+{id:'review-systems',title:'Review of Systems',fields:[
+{id:'general_symptoms',label:'General (fever, weight loss, fatigue, night sweats)',type:'textarea'},
+{id:'respiratory',label:'Respiratory (cough, SOB, chest pain, wheeze)',type:'textarea'},
+{id:'cardiovascular',label:'Cardiovascular (chest pain, palpitations, edema)',type:'textarea'},
+{id:'gastrointestinal',label:'GI (nausea, vomiting, diarrhea, constipation, blood)',type:'textarea'},
+{id:'neurological',label:'Neurological (headache, dizziness, weakness, numbness)',type:'textarea'},
+{id:'musculoskeletal',label:'Musculoskeletal (joint pain, swelling, stiffness)',type:'textarea'},
+{id:'genitourinary',label:'GU (dysuria, frequency, discharge)',type:'textarea'},
+{id:'dermatological',label:'Dermatological (rash, itching, lesions)',type:'textarea'}
+]},
+{id:'physical-exam',title:'Physical Examination Findings',fields:[
+{id:'vitals_bp',label:'Blood Pressure',type:'text',hint:'e.g. 120/80'},
+{id:'vitals_hr',label:'Heart Rate',type:'number'},
+{id:'vitals_rr',label:'Respiratory Rate',type:'number'},
+{id:'vitals_temp',label:'Temperature (°C)',type:'text'},
+{id:'vitals_o2',label:'O2 Saturation (%)',type:'number'},
+{id:'gen_exam',label:'General examination findings',type:'textarea'},
+{id:'system_exam',label:'System-specific examination findings',type:'textarea'}
+]},
+{id:'assessment-plan',title:'Assessment & Plan',fields:[
+{id:'differential',label:'Differential diagnoses',type:'textarea'},
+{id:'investigations',label:'Investigations ordered / needed',type:'textarea'},
+{id:'treatment_plan',label:'Treatment plan',type:'textarea'},
+{id:'referral',label:'Referral needed?',type:'text'},
+{id:'follow_up',label:'Follow-up plan',type:'textarea'},
+{id:'clinician_name',label:'Clinician name',type:'text'},
+{id:'date',label:'Date',type:'date'}
+]}
+];
+
+const SURGERY_QUESTIONS = [
+{id:'surgical-specific',title:'Surgical-Specific History',fields:[
+{id:'surg_bleeding',label:'Bleeding tendency / coagulopathy',type:'select',options:['None','Easy bruising','Prolonged bleeding','On anticoagulants','Unknown']},
+{id:'surg_anesthesia',label:'Previous anesthesia complications?',type:'textarea'},
+{id:'surg_fasting',label:'Last meal / fasting status',type:'text'},
+{id:'surg_wound',label:'Wound healing history',type:'select',options:['Normal','Delayed','Keloid formation','Unknown']},
+{id:'surg_dvt',label:'DVT / PE risk factors',type:'textarea'},
+{id:'surg_bowel',label:'Bowel / bladder function',type:'textarea'},
+{id:'surg_menstrual',label:'Menstrual status (if female, LMP)',type:'text',hint:'Relevant for pregnancy before surgery'},
+{id:'surg_implants',label:'Any implants / pacemaker / prosthesis?',type:'textarea'},
+{id:'surg_antibiotics',label:'Antibiotic allergies',type:'text'}
+]},
+{id:'wound-assessment',title:'Wound / Lesion Assessment',fields:[
+{id:'wound_type',label:'Type of wound / lesion',type:'select',options:['Laceration','Incision','Ulcer','Abscess','Mass','Burn','Other']},
+{id:'wound_size',label:'Size (cm)',type:'text'},
+{id:'wound_depth',label:'Depth',type:'select',options:['Superficial','Partial thickness','Full thickness','Through and through']},
+{id:'wound_edge',label:'Edge / margin characteristics',type:'textarea'},
+{id:'wound_discharge',label:'Discharge / exudate',type:'select',options:['None','Serous','Purulent','Sanguinous','Foul-smelling']},
+{id:'wound_surrounding',label:'Surrounding skin appearance',type:'textarea'},
+{id:'wound_pain',label:'Pain score at wound site (1-10)',type:'number',attrs:{min:1,max:10}},
+{id:'wound_imaging',label:'Imaging findings (if done)',type:'textarea'}
+]}
+];
+
+const MEDICINE_QUESTIONS = [
+{id:'medicine-specific',title:'Medical-Specific History',fields:[
+{id:'med_onset_details',label:'Detailed onset and progression of symptoms',type:'textarea'},
+{id:'med_functional',label:'Functional status / ECOG performance score',type:'select',options:['0 - Fully active','1 - Restricted in strenuous activity','2 - Ambulatory, unable to work','3 - Limited self-care','4 - Completely disabled']}
+]},
+{id:'system-review-detailed',title:'System-Specific Review',fields:[
+{id:'med_endocrine',label:'Endocrine (thyroid, diabetes, adrenal)',type:'textarea'},
+{id:'med_renal',label:'Renal (urine output, edema, dialysis)',type:'textarea'},
+{id:'med_hepatic',label:'Hepatic (jaundice, ascites, encephalopathy)',type:'textarea'},
+{id:'med_hematologic',label:'Hematologic (anemia, bruising, lymph nodes)',type:'textarea'},
+{id:'med_immunologic',label:'Immunologic / autoimmune history',type:'textarea'},
+{id:'med_psychiatric',label:'Psychiatric history (depression, anxiety, etc.)',type:'textarea'},
+{id:'med_infections',label:'Recent infections / fever history',type:'textarea'}
+]},
+{id:'risk-factors',title:'Risk Factor Assessment',fields:[
+{id:'med_bmi',label:'BMI',type:'text'},
+{id:'med_waist',label:'Waist circumference (cm)',type:'text'},
+{id:'med_family_cvd',label:'Family history of premature CVD',type:'select',options:['No','Yes - parent','Yes - sibling','Unknown']},
+{id:'med_lipids',label:'Lipid profile (if known)',type:'text'},
+{id:'med_glucose',label:'Blood glucose / HbA1c (if known)',type:'text'}
+]}
+];
+
+const PAEDIATRIC_QUESTIONS = [
+{id:'antenatal-history',title:'Antenatal & Birth History',fields:[
+{id:'preg_duration',label:'Gestation at birth (weeks)',type:'number'},
+{id:'birth_type',label:'Type of delivery',type:'select',options:['Normal vaginal','C-section','Forceps','Vacuum','Breech']},
+{id:'birth_weight',label:'Birth weight (kg)',type:'text'},
+{id:'antenatal_complications',label:'Antenatal complications',type:'textarea',hint:'Maternal infections, medications, diabetes, hypertension'},
+{id:'perinatal_complications',label:'Perinatal complications',type:'textarea',hint:'Resuscitation needed, NICU stay, jaundice, hypoxia'},
+{id:'feeding_birth',label:'Feeding at birth',type:'select',options:['Breastfeeding','Formula','Mixed']}
+]},
+{id:'developmental-history',title:'Developmental Milestones',fields:[
+{id:'dev_motor',label:'Motor milestones (rolling, sitting, crawling, walking)',type:'textarea'},
+{id:'dev_speech',label:'Speech / language milestones',type:'textarea'},
+{id:'dev_social',label:'Social / behavioral milestones',type:'textarea'},
+{id:'dev_school',label:'School performance (if applicable)',type:'textarea'},
+{id:'dev_concerns',label:'Any developmental concerns?',type:'textarea'}
+]},
+{id:'paediatric-feeding',title:'Feeding & Nutrition',fields:[
+{id:'feed_current',label:'Current feeding method',type:'select',options:['Breastfeeding','Formula','Mixed','Solid foods','Picky eater']},
+{id:'feed_freq',label:'Feeding frequency',type:'text'},
+{id:'feed_intake',label:'Estimated intake / appetite',type:'textarea'},
+{id:'feed_issues',label:'Feeding difficulties (reflux, vomiting, choking)',type:'textarea'},
+{id:'growth_params',label:'Growth parameters (weight, height, head circumference)',type:'textarea'}
+]},
+{id:'paediatric-immunization',title:'Immunization & Screening',fields:[
+{id:'immunization_status',label:'Immunization status (up to date?)',type:'select',options:['Up to date','Partially immunized','Not immunized','Unknown']},
+{id:'immunization_details',label:'Immunization details / dates',type:'textarea'},
+{id:'newborn_screening',label:'Newborn screening results',type:'textarea'},
+{id:'paed_allergies',label:'Known allergies',type:'textarea'}
+]},
+{id:'paediatric-review',title:'Paediatric Review of Systems',fields:[
+{id:'paed_growth',label:'Growth concerns (short stature, failure to thrive, obesity)',type:'textarea'},
+{id:'paed_sleep',label:'Sleep patterns / disturbances',type:'textarea'},
+{id:'paed_toileting',label:'Toilet training status',type:'textarea'},
+{id:'paed_behaviour',label:'Behavioral concerns',type:'textarea'},
+{id:'paed_infections',label:'Recurrent infections?',type:'textarea'},
+{id:'paed_hospitalizations',label:'Previous hospitalizations / surgeries',type:'textarea'}
+]}
+];
+
+const GYNAEOBS_QUESTIONS = [
+{id:'menstrual-history',title:'Menstrual History',fields:[
+{id:'gyn_menarche',label:'Age at menarche',type:'number'},
+{id:'gyn_lmp',label:'LMP (Last Menstrual Period)',type:'date'},
+{id:'gyn_cycle',label:'Cycle length (days)',type:'text',hint:'e.g. 28 days, irregular'},
+{id:'gyn_duration',label:'Duration of bleeding (days)',type:'text'},
+{id:'gyn_flow',label:'Flow amount',type:'select',options:['Light','Moderate','Heavy','Very heavy']},
+{id:'gyn_dysmenorrhea',label:'Dysmenorrhea (painful periods)',type:'select',options:['None','Mild','Moderate','Severe']},
+{id:'gyn_menopause',label:'Menopausal status',type:'select',options:['Premenopausal','Perimenopausal','Postmenopausal','Not applicable']},
+{id:'gyn_bleeding_issues',label:'Abnormal uterine bleeding?',type:'textarea'}
+]},
+{id:'obstetric-history',title:'Obstetric History',fields:[
+{id:'gyn_gravida',label:'Gravida (total pregnancies)',type:'number'},
+{id:'gyn_para',label:'Para (deliveries > 24 weeks)',type:'number'},
+{id:'gyn_abortions',label:'Abortions (spontaneous / elective)',type:'text'},
+{id:'gyn_living',label:'Living children',type:'number'},
+{id:'gyn_obstetric_complications',label:'Obstetric complications',type:'textarea',hint:'Pre-eclampsia, gestational diabetes, hemorrhage, etc.'},
+{id:'gyn_delivery_types',label:'Types of deliveries',type:'textarea',hint:'Vaginal / C-section details'},
+{id:'gyn_breastfeeding',label:'Breastfeeding history',type:'textarea'}
+]},
+{id:'gynae-history',title:'Gynaecological History',fields:[
+{id:'gyn_contraception',label:'Current / past contraception',type:'textarea'},
+{id:'gyn_cervical_screening',label:'Cervical screening (Pap smear) history',type:'textarea'},
+{id:'gyn_sti',label:'STI history',type:'textarea'},
+{id:'gyn_pelvic_pain',label:'Pelvic pain / dyspareunia',type:'textarea'},
+{id:'gyn_vaginal_discharge',label:'Vaginal discharge / itching',type:'textarea'},
+{id:'gyn_fibroids',label:'Fibroids / endometriosis / PCOS history',type:'textarea'},
+{id:'gyn_urinary',label:'Urinary symptoms (incontinence, frequency)',type:'textarea'},
+{id:'gyn_breast',label:'Breast symptoms / self-exam findings',type:'textarea'}
+]},
+{id:'pregnancy-current',title:'Current Pregnancy (if applicable)',fields:[
+{id:'preg_gestational_age',label:'Gestational age',type:'text'},
+{id:'preg_edd',label:'Estimated Due Date (EDD)',type:'date'},
+{id:'preg_antenatal_care',label:'Antenatal care / visits',type:'textarea'},
+{id:'preg_scan',label:'Ultrasound findings',type:'textarea'},
+{id:'preg_complaints',label:'Current pregnancy complaints',type:'textarea'},
+{id:'preg_movements',label:'Fetal movements',type:'textarea'},
+{id:'preg_risk_factors',label:'Risk factors (age, BMI, medical conditions)',type:'textarea'}
+]}
+];
+
+let currentSpecialty=null,currentStep=0,steps=[],formData={};
+
+function getSpecialtyQuestions(s){return{surgery:SURGERY_QUESTIONS,medicine:MEDICINE_QUESTIONS,paediatric:PAEDIATRIC_QUESTIONS,gynaeobs:GYNAEOBS_QUESTIONS}[s]||[]}
+
+function getSteps(s){const b=JSON.parse(JSON.stringify(BASE_STEPS)),e=getSpecialtyQuestions(s);return[...b,...e]}
+
+function startAssessment(s){currentSpecialty=s;currentStep=0;formData={};steps=getSteps(s);document.getElementById('specialty-selector').classList.add('hidden');document.getElementById('assessment-view').classList.remove('hidden');document.getElementById('summary-view').classList.add('hidden');renderStep()}
+
+function renderStep(){const step=steps[currentStep];if(!step)return;renderStepIndicator();updateProgress();const c=document.getElementById('step-content');let html='<h2>'+(currentStep+1)+'. '+step.title+'</h2>';step.fields.forEach(f=>{const v=formData[f.id]||'',req=f.required?'required':'',hint=f.hint?'<div class="hint">'+f.hint+'</div>':'',attrs=f.attrs?Object.entries(f.attrs).map(([k,v])=>k+'="'+v+'"').join(' '):'';html+='<div class="form-group"><label for="'+f.id+'">'+f.label+(f.required?' <span style="color:#e53e3e">*</span>':'')+'</label>'+hint;switch(f.type){case'textarea':html+='<textarea id="'+f.id+'" name="'+f.id+'" '+req+' '+attrs+'>'+v+'</textarea>';break;case'select':html+='<select id="'+f.id+'" name="'+f.id+'" '+req+'><option value="">-- Select --</option>';(f.options||[]).forEach(o=>{html+='<option value="'+o+'"'+(v===o?'selected':'')+'>'+o+'</option>'})
+html+='</select>';break;case'checkbox':const vals=Array.isArray(v)?v:[];html+='<div class="checkbox-group">';(f.options||[]).forEach(o=>{html+='<label><input type="checkbox" name="'+f.id+'" value="'+o+'"'+(vals.includes(o)?'checked':'')+'> '+o+'</label>'});html+='</div>';break;case'radio':html+='<div class="radio-group">';(f.options||[]).forEach(o=>{html+='<label><input type="radio" name="'+f.id+'" value="'+o+'"'+(v===o?'checked':'')+' '+req+'> '+o+'</label>'});html+='</div>';break;default:html+='<input type="'+f.type+'" id="'+f.id+'" name="'+f.id+'" value="'+v+'" '+req+' '+attrs+'>'}html+='</div>'})
+c.innerHTML=html;document.getElementById('prev-btn').disabled=currentStep===0;document.getElementById('next-btn').classList.toggle('hidden',currentStep>=steps.length-1);document.getElementById('submit-btn').classList.toggle('hidden',currentStep<steps.length-1)}
+
+function renderStepIndicator(){const c=document.getElementById('step-indicator');let h='';steps.forEach((s,i)=>{let c='step-dot';if(i===currentStep)c+=' active';else if(i<currentStep)c+=' completed';h+='<div class="'+c+'" onclick="goToStep('+i+')">'+(i+1)+'. '+s.title+'</div>'});c.innerHTML=h}
+
+function updateProgress(){const p=((currentStep+1)/steps.length)*100;document.getElementById('progress-fill').style.width=p+'%';document.getElementById('progress-text').textContent='Step '+(currentStep+1)+' of '+steps.length}
+
+function saveCurrentStep(){const step=steps[currentStep];if(!step)return;let allValid=true;step.fields.forEach(f=>{const el=document.getElementById(f.id);if(!el)return;let v;if(f.type==='checkbox'){const ch=document.querySelectorAll('input[name="'+f.id+'"]:checked');v=Array.from(ch).map(c=>c.value)}else v=el.value;formData[f.id]=v;if(f.required){const ok=f.type==='checkbox'?v.length>0:v&&v.trim()!=='';if(!ok){allValid=false;el.style.borderColor='#e53e3e'}else el.style.borderColor=''}});return allValid}
+
+function nextStep(){if(!saveCurrentStep())return;if(currentStep<steps.length-1){currentStep++;renderStep()}}
+function prevStep(){saveCurrentStep();if(currentStep>0){currentStep--;renderStep()}}
+function goToStep(i){if(i===currentStep)return;if(!saveCurrentStep())return;currentStep=i;renderStep()}
+
+function submitAssessment(){if(!saveCurrentStep()){alert('Please fill in all required fields before completing.');return}
+document.getElementById('assessment-view').classList.add('hidden');document.getElementById('summary-view').classList.remove('hidden');renderSummary()}
+
+function renderSummary(){const c=document.getElementById('summary-content'),sName=currentSpecialty.charAt(0).toUpperCase()+currentSpecialty.slice(1);let h='<p><strong>Specialty:</strong> '+sName+'</p><p><strong>Date:</strong> '+new Date().toLocaleDateString()+'</p><hr style="margin:12px 0;border-color:#e2e8f0">'
+steps.forEach(step=>{let has=false,sec='';step.fields.forEach(f=>{const v=formData[f.id];if(v&&(typeof v==='string'?v.trim()!=='':v.length>0)){has=true;sec+='<p><strong>'+f.label+':</strong> '+(Array.isArray(v)?v.join(', '):v)+'</p>'}})
+if(has)h+='<h3>'+step.title+'</h3>'+sec})
+c.innerHTML=h.includes('<h3>')?h:h+'<p><em>No data entered.</em></p>'}
+
+function printSummary(){window.print()}
+function resetApp(){currentSpecialty=null;currentStep=0;steps=[];formData={};document.getElementById('specialty-selector').classList.remove('hidden');document.getElementById('assessment-view').classList.add('hidden');document.getElementById('summary-view').classList.add('hidden')}
+</script>
+</body>
+</html>
