@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedHistory - Medical History Assistant</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <h1>MedHistory</h1>
+      <p>Step-by-step medical history assistant</p>
+    </header>
+
+    <div id="specialty-selector" class="card">
+      <h2>Select Specialty</h2>
+      <div class="specialty-grid">
+        <button class="specialty-btn" data-specialty="surgery" onclick="startAssessment('surgery')">
+          <span class="icon">🔧</span>
+          <span>Surgery</span>
+        </button>
+        <button class="specialty-btn" data-specialty="medicine" onclick="startAssessment('medicine')">
+          <span class="icon">💊</span>
+          <span>Medicine</span>
+        </button>
+        <button class="specialty-btn" data-specialty="paediatric" onclick="startAssessment('paediatric')">
+          <span class="icon">👶</span>
+          <span>Paediatrics</span>
+        </button>
+        <button class="specialty-btn" data-specialty="gynaeobs" onclick="startAssessment('gynaeobs')">
+          <span class="icon">👩</span>
+          <span>Gynae / Obstetrics</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="assessment-view" class="hidden">
+      <div class="progress-container">
+        <div id="progress-bar" class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+        <span id="progress-text">Step 1 of 10</span>
+      </div>
+
+      <div id="step-indicator" class="step-indicator"></div>
+
+      <div id="step-content" class="card"></div>
+
+      <div class="nav-buttons">
+        <button id="prev-btn" class="btn btn-secondary" onclick="prevStep()" disabled>Previous</button>
+        <button id="next-btn" class="btn btn-primary" onclick="nextStep()">Next</button>
+        <button id="submit-btn" class="btn btn-success hidden" onclick="submitAssessment()">Complete</button>
+      </div>
+    </div>
+
+    <div id="summary-view" class="hidden">
+      <div class="card">
+        <h2>Medical History Summary</h2>
+        <div id="summary-content"></div>
+        <div class="summary-actions">
+          <button class="btn btn-primary" onclick="printSummary()">Print</button>
+          <button class="btn btn-secondary" onclick="resetApp()">New Assessment</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data/questions.js"></script>
+  <script src="js/specialties/surgery.js"></script>
+  <script src="js/specialties/medicine.js"></script>
+  <script src="js/specialties/paediatric.js"></script>
+  <script src="js/specialties/gynaeobs.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
