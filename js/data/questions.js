@@ -72,7 +72,7 @@ const BASE_STEPS = [
   },
   {
     id: 'social-history',
-    title: 'Social History',
+    title: 'Social & Socioeconomic History',
     fields: [
       { id: 'smoking', label: 'Smoking status', type: 'select',
         options: ['Never', 'Former', 'Current'] },
@@ -81,21 +81,41 @@ const BASE_STEPS = [
       { id: 'substance_use', label: 'Recreational drug use', type: 'textarea' },
       { id: 'diet', label: 'Diet / nutrition', type: 'textarea' },
       { id: 'exercise', label: 'Exercise habits', type: 'text' },
-      { id: 'living_situation', label: 'Living situation', type: 'textarea' }
+      { id: 'living_situation', label: 'Living situation', type: 'textarea' },
+      { id: 'home_type', label: 'Home type', type: 'select',
+        options: ['Pucca (brick)', 'Semi-pucca', 'Kacha (mud)', 'Apartment', 'Other'] },
+      { id: 'water_source', label: 'Water source', type: 'select',
+        options: ['Tap (filtered)', 'Tap (unfiltered)', 'Well / Borehole', 'Bottled', 'Tanker', 'Other'] },
+      { id: 'sanitation', label: 'Sanitation / toilet type', type: 'select',
+        options: ['Flush toilet', 'Pit latrine', 'Open defecation', 'Other'] },
+      { id: 'pets', label: 'Pets at home', type: 'select', options: ['Yes', 'No'] },
+      { id: 'occupational_hazards', label: 'Occupational hazards / exposures', type: 'textarea' },
+      { id: 'travel_history', label: 'Recent travel history', type: 'textarea' }
     ]
   },
   {
     id: 'review-systems',
     title: 'Review of Systems',
     fields: [
-      { id: 'general_symptoms', label: 'General (fever, weight loss, fatigue, night sweats)', type: 'textarea' },
-      { id: 'respiratory', label: 'Respiratory (cough, SOB, chest pain, wheeze)', type: 'textarea' },
-      { id: 'cardiovascular', label: 'Cardiovascular (chest pain, palpitations, edema)', type: 'textarea' },
-      { id: 'gastrointestinal', label: 'GI (nausea, vomiting, diarrhea, constipation, blood)', type: 'textarea' },
-      { id: 'neurological', label: 'Neurological (headache, dizziness, weakness, numbness)', type: 'textarea' },
-      { id: 'musculoskeletal', label: 'Musculoskeletal (joint pain, swelling, stiffness)', type: 'textarea' },
-      { id: 'genitourinary', label: 'GU (dysuria, frequency, discharge)', type: 'textarea' },
-      { id: 'dermatological', label: 'Dermatological (rash, itching, lesions)', type: 'textarea' }
+      { id: 'general_symptoms', label: 'General', type: 'checkbox',
+        options: ['Fever', 'Weight loss', 'Fatigue', 'Night sweats', 'Loss of appetite', 'Malaise', 'None'] },
+      { id: 'respiratory', label: 'Respiratory', type: 'checkbox',
+        options: ['Cough', 'SOB', 'Chest pain', 'Wheeze', 'Hemoptysis', 'Sputum production', 'None'] },
+      { id: 'cardiovascular', label: 'Cardiovascular', type: 'checkbox',
+        options: ['Chest pain', 'Palpitations', 'Edema', 'SOB on exertion', 'Orthopnea', 'PND', 'Cyanosis', 'None'] },
+      { id: 'gastrointestinal', label: 'Gastrointestinal', type: 'checkbox',
+        options: ['Nausea', 'Vomiting', 'Diarrhea', 'Constipation', 'Blood in stool', 'Abdominal pain', 'Jaundice', 'Dysphagia', 'Heartburn', 'None'] },
+      { id: 'neurological', label: 'Neurological', type: 'checkbox',
+        options: ['Headache', 'Dizziness', 'Weakness', 'Numbness', 'Tremors', 'Seizures', 'Loss of consciousness', 'Visual changes', 'None'] },
+      { id: 'musculoskeletal', label: 'Musculoskeletal', type: 'checkbox',
+        options: ['Joint pain', 'Joint swelling', 'Stiffness', 'Muscle pain', 'Back pain', 'Limited mobility', 'None'] },
+      { id: 'genitourinary', label: 'Genitourinary', type: 'checkbox',
+        options: ['Dysuria', 'Frequency', 'Urgency', 'Nocturia', 'Hematuria', 'Discharge', 'Incontinence', 'None'] },
+      { id: 'dermatological', label: 'Dermatological', type: 'checkbox',
+        options: ['Rash', 'Itching', 'Lesions', 'Hair loss', 'Nail changes', 'Dry skin', 'None'] },
+      { id: 'endocrine', label: 'Endocrine', type: 'checkbox',
+        options: ['Heat/cold intolerance', 'Weight change', 'Excessive thirst', 'Excessive urination', 'Fatigue', 'None'] },
+      { id: 'ros_other', label: 'Other symptoms not listed', type: 'textarea' }
     ]
   },
   {

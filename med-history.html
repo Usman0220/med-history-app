@@ -139,23 +139,31 @@ const BASE_STEPS = [
 {id:'genetic_disorders',label:'Genetic / hereditary disorders',type:'textarea'},
 {id:'family_mental',label:'Family psychiatric history',type:'textarea'}
 ]},
-{id:'social-history',title:'Social History',fields:[
+{id:'social-history',title:'Social & Socioeconomic History',fields:[
 {id:'smoking',label:'Smoking status',type:'select',options:['Never','Former','Current']},
 {id:'alcohol',label:'Alcohol consumption',type:'select',options:['Never','Occasional','Regular']},
 {id:'substance_use',label:'Recreational drug use',type:'textarea'},
 {id:'diet',label:'Diet / nutrition',type:'textarea'},
 {id:'exercise',label:'Exercise habits',type:'text'},
-{id:'living_situation',label:'Living situation',type:'textarea'}
+{id:'living_situation',label:'Living situation',type:'textarea'},
+{id:'home_type',label:'Home type',type:'select',options:['Pucca (brick)','Semi-pucca','Kacha (mud)','Apartment','Other']},
+{id:'water_source',label:'Water source',type:'select',options:['Tap (filtered)','Tap (unfiltered)','Well / Borehole','Bottled','Tanker','Other']},
+{id:'sanitation',label:'Sanitation / toilet type',type:'select',options:['Flush toilet','Pit latrine','Open defecation','Other']},
+{id:'pets',label:'Pets at home',type:'select',options:['Yes','No']},
+{id:'occupational_hazards',label:'Occupational hazards / exposures',type:'textarea'},
+{id:'travel_history',label:'Recent travel history',type:'textarea'}
 ]},
 {id:'review-systems',title:'Review of Systems',fields:[
-{id:'general_symptoms',label:'General (fever, weight loss, fatigue, night sweats)',type:'textarea'},
-{id:'respiratory',label:'Respiratory (cough, SOB, chest pain, wheeze)',type:'textarea'},
-{id:'cardiovascular',label:'Cardiovascular (chest pain, palpitations, edema)',type:'textarea'},
-{id:'gastrointestinal',label:'GI (nausea, vomiting, diarrhea, constipation, blood)',type:'textarea'},
-{id:'neurological',label:'Neurological (headache, dizziness, weakness, numbness)',type:'textarea'},
-{id:'musculoskeletal',label:'Musculoskeletal (joint pain, swelling, stiffness)',type:'textarea'},
-{id:'genitourinary',label:'GU (dysuria, frequency, discharge)',type:'textarea'},
-{id:'dermatological',label:'Dermatological (rash, itching, lesions)',type:'textarea'}
+{id:'general_symptoms',label:'General',type:'checkbox',options:['Fever','Weight loss','Fatigue','Night sweats','Loss of appetite','Malaise','None']},
+{id:'respiratory',label:'Respiratory',type:'checkbox',options:['Cough','SOB','Chest pain','Wheeze','Hemoptysis','Sputum production','None']},
+{id:'cardiovascular',label:'Cardiovascular',type:'checkbox',options:['Chest pain','Palpitations','Edema','SOB on exertion','Orthopnea','PND','Cyanosis','None']},
+{id:'gastrointestinal',label:'Gastrointestinal',type:'checkbox',options:['Nausea','Vomiting','Diarrhea','Constipation','Blood in stool','Abdominal pain','Jaundice','Dysphagia','Heartburn','None']},
+{id:'neurological',label:'Neurological',type:'checkbox',options:['Headache','Dizziness','Weakness','Numbness','Tremors','Seizures','Loss of consciousness','Visual changes','None']},
+{id:'musculoskeletal',label:'Musculoskeletal',type:'checkbox',options:['Joint pain','Joint swelling','Stiffness','Muscle pain','Back pain','Limited mobility','None']},
+{id:'genitourinary',label:'Genitourinary',type:'checkbox',options:['Dysuria','Frequency','Urgency','Nocturia','Hematuria','Discharge','Incontinence','None']},
+{id:'dermatological',label:'Dermatological',type:'checkbox',options:['Rash','Itching','Lesions','Hair loss','Nail changes','Dry skin','None']},
+{id:'endocrine',label:'Endocrine',type:'checkbox',options:['Heat/cold intolerance','Weight change','Excessive thirst','Excessive urination','Fatigue','None']},
+{id:'ros_other',label:'Other symptoms not listed',type:'textarea'}
 ]},
 {id:'physical-exam',title:'Physical Examination Findings',fields:[
 {id:'vitals_bp',label:'Blood Pressure',type:'text',hint:'e.g. 120/80'},
@@ -178,88 +186,200 @@ const BASE_STEPS = [
 ];
 
 const SURGERY_QUESTIONS = [
-{id:'surgical-specific',title:'Surgical-Specific History',fields:[
-{id:'surg_bleeding',label:'Bleeding tendency / coagulopathy',type:'select',options:['None','Easy bruising','Prolonged bleeding','On anticoagulants','Unknown']},
-{id:'surg_anesthesia',label:'Previous anesthesia complications?',type:'textarea'},
-{id:'surg_fasting',label:'Last meal / fasting status',type:'text'},
-{id:'surg_wound',label:'Wound healing history',type:'select',options:['Normal','Delayed','Keloid formation','Unknown']},
-{id:'surg_dvt',label:'DVT / PE risk factors',type:'textarea'},
-{id:'surg_bowel',label:'Bowel / bladder function',type:'textarea'},
-{id:'surg_menstrual',label:'Menstrual status (if female, LMP)',type:'text',hint:'Relevant for pregnancy before surgery'},
-{id:'surg_implants',label:'Any implants / pacemaker / prosthesis?',type:'textarea'},
-{id:'surg_antibiotics',label:'Antibiotic allergies',type:'text'}
+{id:'surgical-history',title:'Surgical History',fields:[
+{id:'surg_previous',label:'Previous surgeries (type, date, hospital, surgeon)',type:'textarea'},
+{id:'surg_anesthesia',label:'Previous anesthesia — type and any complications',type:'textarea'},
+{id:'surg_family_anesthesia',label:'Family history of anesthesia complications (e.g. malignant hyperthermia)',type:'select',options:['No','Yes','Unknown']}
+]},
+{id:'surgical-risk',title:'Perioperative Risk Assessment',fields:[
+{id:'surg_bleeding',label:'Bleeding risk — anticoagulants, coagulopathy, easy bruising, liver disease',type:'checkbox',options:['On anticoagulants','Easy bruising','Prolonged bleeding','Liver disease','Hemophilia','None']},
+{id:'surg_bleeding_inr',label:'INR / Coagulation profile (if known)',type:'text'},
+{id:'surg_cardiac_risk',label:'Cardiac risk — CAD, CHF, arrhythmia, valvular disease, pacemaker',type:'checkbox',options:['CAD','CHF','Arrhythmia','Valvular disease','Pacemaker/ICD','None']},
+{id:'surg_pulmonary_risk',label:'Pulmonary risk — COPD, asthma, OSA, smoking',type:'checkbox',options:['COPD','Asthma','OSA','Current smoker','None']},
+{id:'surg_dvt_risk',label:'DVT / PE risk factors',type:'checkbox',options:['Prior DVT/PE','Malignancy','Obesity','Pregnancy','OCP/HRT','Prolonged immobility','None']},
+{id:'surg_renal_risk',label:'Renal risk — CKD, dialysis, electrolyte abnormalities',type:'checkbox',options:['CKD','Dialysis','Electrolyte abnormality','None']},
+{id:'surg_diabetes',label:'Diabetes status',type:'select',options:['No','Type 1','Type 2','Pre-diabetic']},
+{id:'surg_fasting',label:'Fasting status / NBM since',type:'text',hint:'Time of last meal'},
+{id:'surg_implants',label:'Any implants / prosthesis / metal / pacemaker?',type:'textarea'},
+{id:'surg_allergies',label:'Allergies — antibiotics, latex, contrast, antiseptics',type:'textarea'}
+]},
+{id:'surgical-specific',title:'Surgical-Specific Presenting History',fields:[
+{id:'surg_bowel',label:'Bowel function — last bowel movement, stool character, blood',type:'textarea'},
+{id:'surg_bladder',label:'Bladder function — last void, catheter, urinary symptoms',type:'textarea'},
+{id:'surg_menstrual',label:'Menstrual / pregnancy status (if female)',type:'text',hint:'LMP, possibility of pregnancy'},
+{id:'surg_breast',label:'Breast symptoms (if applicable)',type:'textarea'},
+{id:'surg_neurovascular',label:'Neurovascular status of limb (if applicable)',type:'textarea',hint:'Color, warmth, pulses, sensation, movement'},
+{id:'surg_wound',label:'Wound healing history / keloid formation',type:'select',options:['Normal','Delayed healing','Keloid / hypertrophic scar','Unknown']}
 ]},
 {id:'wound-assessment',title:'Wound / Lesion Assessment',fields:[
-{id:'wound_type',label:'Type of wound / lesion',type:'select',options:['Laceration','Incision','Ulcer','Abscess','Mass','Burn','Other']},
-{id:'wound_size',label:'Size (cm)',type:'text'},
-{id:'wound_depth',label:'Depth',type:'select',options:['Superficial','Partial thickness','Full thickness','Through and through']},
+{id:'wound_type',label:'Type of wound / lesion',type:'select',options:['Laceration','Incision','Ulcer','Abscess','Mass / Tumor','Burn','Fracture-related','Other']},
+{id:'wound_cause',label:'Cause / mechanism',type:'textarea'},
+{id:'wound_age',label:'How old is the wound / when did it start?',type:'text'},
+{id:'wound_size',label:'Size (cm) — length × width × depth',type:'text'},
+{id:'wound_depth',label:'Depth / layers involved',type:'select',options:['Superficial (epidermis)','Partial thickness (dermis)','Full thickness (subcutis)','Deep (muscle/bone)','Through and through']},
 {id:'wound_edge',label:'Edge / margin characteristics',type:'textarea'},
-{id:'wound_discharge',label:'Discharge / exudate',type:'select',options:['None','Serous','Purulent','Sanguinous','Foul-smelling']},
-{id:'wound_surrounding',label:'Surrounding skin appearance',type:'textarea'},
-{id:'wound_pain',label:'Pain score at wound site (1-10)',type:'number',attrs:{min:1,max:10}},
-{id:'wound_imaging',label:'Imaging findings (if done)',type:'textarea'}
+{id:'wound_base',label:'Base / bed characteristics',type:'textarea',hint:'Granulation, slough, necrotic, bleeding'},
+{id:'wound_discharge',label:'Discharge / exudate',type:'select',options:['None','Serous','Purulent','Sanguinous','Serosanguinous','Foul-smelling']},
+{id:'wound_surrounding',label:'Surrounding skin (erythema, edema, warmth, induration)',type:'textarea'},
+{id:'wound_pain',label:'Pain at wound site (1-10)',type:'number',attrs:{min:0,max:10}},
+{id:'wound_signs_infection',label:'Signs of infection',type:'checkbox',options:['Erythema','Warmth','Swelling','Purulent discharge','Fever','Lymphangitis','None']},
+{id:'wound_imaging',label:'Imaging findings (if done)',type:'textarea'},
+{id:'wound_management',label:'Wound management so far',type:'textarea'}
 ]}
 ];
 
 const MEDICINE_QUESTIONS = [
-{id:'medicine-specific',title:'Medical-Specific History',fields:[
-{id:'med_onset_details',label:'Detailed onset and progression of symptoms',type:'textarea'},
-{id:'med_functional',label:'Functional status / ECOG performance score',type:'select',options:['0 - Fully active','1 - Restricted in strenuous activity','2 - Ambulatory, unable to work','3 - Limited self-care','4 - Completely disabled']}
+{id:'medicine-functional',title:'Functional Status & Performance',fields:[
+{id:'med_ecog',label:'ECOG / WHO Performance Status',type:'select',options:['0 - Fully active, no restrictions','1 - Strenuous activity restricted, ambulatory','2 - Ambulatory, capable of self-care, unable to work','3 - Limited self-care, confined to bed/chair >50% waking hours','4 - Completely disabled, confined to bed/chair']},
+{id:'med_mobility',label:'Mobility / ambulation status',type:'select',options:['Independent','Walking aid','Wheelchair','Bedridden']},
+{id:'med_self_care',label:'Self-care ability',type:'select',options:['Independent','Needs assistance','Fully dependent']},
+{id:'med_weight_change',label:'Weight change (recent 3 months)',type:'text',hint:'Unintentional loss/gain in kg'},
+{id:'med_appetite',label:'Appetite',type:'select',options:['Normal','Decreased','Increased','Poor']}
 ]},
-{id:'system-review-detailed',title:'System-Specific Review',fields:[
-{id:'med_endocrine',label:'Endocrine (thyroid, diabetes, adrenal)',type:'textarea'},
-{id:'med_renal',label:'Renal (urine output, edema, dialysis)',type:'textarea'},
-{id:'med_hepatic',label:'Hepatic (jaundice, ascites, encephalopathy)',type:'textarea'},
-{id:'med_hematologic',label:'Hematologic (anemia, bruising, lymph nodes)',type:'textarea'},
-{id:'med_immunologic',label:'Immunologic / autoimmune history',type:'textarea'},
-{id:'med_psychiatric',label:'Psychiatric history (depression, anxiety, etc.)',type:'textarea'},
-{id:'med_infections',label:'Recent infections / fever history',type:'textarea'}
+{id:'medicine-review',title:'System-Specific Detailed Review',fields:[
+{id:'med_endocrine',label:'Endocrine — Thyroid (goiter, heat/cold intolerance, weight change), Diabetes (polyuria, polydipsia, polyphagia, neuropathy), Adrenal',type:'checkbox',options:['Thyroid enlargement','Heat/cold intolerance','Polyuria','Polydipsia','Weight change','Neuropathy symptoms','None']},
+{id:'med_renal',label:'Renal — Urine output changes, edema, flank pain, hematuria, frothy urine, dialysis history',type:'checkbox',options:['Oliguria/anuria','Polyuria','Edema','Flank pain','Hematuria','Frothy urine','Nocturia','None']},
+{id:'med_hepatic',label:'Hepatic — Jaundice, ascites, pruritus, easy bruising, GI bleeding, encephalopathy',type:'checkbox',options:['Jaundice','Ascites','Pruritus','Easy bruising','GI bleeding','Confusion','None']},
+{id:'med_hematologic',label:'Hematologic — Anemia symptoms, bleeding tendency, lymphadenopathy, recurrent infections',type:'checkbox',options:['Pallor/fatigue','Easy bruising','Prolonged bleeding','Lymph node swelling','Recurrent infections','None']},
+{id:'med_immunologic',label:'Immunologic / Autoimmune — Rash, joint pain, oral ulcers, photosensitivity, Raynaud\'s, dry eyes/mouth',type:'checkbox',options:['Rash','Joint pain','Oral ulcers','Photosensitivity','Raynaud\'s','Dry eyes','Dry mouth','None']},
+{id:'med_infectious',label:'Infectious — Recent infections, TB contact, fever pattern, HIV risk factors, travel-related infections',type:'textarea'},
+{id:'med_psychiatric',label:'Psychiatric — Depression, anxiety, sleep disturbance, hallucinations, suicidal ideation, memory loss',type:'checkbox',options:['Depression','Anxiety','Sleep disturbance','Hallucinations','Memory loss','Suicidal thoughts','None']},
+{id:'med_ros_other',label:'Other system-specific notes',type:'textarea'}
 ]},
-{id:'risk-factors',title:'Risk Factor Assessment',fields:[
-{id:'med_bmi',label:'BMI',type:'text'},
+{id:'medicine-cv-risk',title:'Cardiovascular Risk Assessment',fields:[
+{id:'med_bmi',label:'BMI (kg/m²)',type:'text'},
 {id:'med_waist',label:'Waist circumference (cm)',type:'text'},
-{id:'med_family_cvd',label:'Family history of premature CVD',type:'select',options:['No','Yes - parent','Yes - sibling','Unknown']},
-{id:'med_lipids',label:'Lipid profile (if known)',type:'text'},
-{id:'med_glucose',label:'Blood glucose / HbA1c (if known)',type:'text'}
+{id:'med_bp_history',label:'History of hypertension?',type:'select',options:['No','Yes — controlled','Yes — uncontrolled','Unknown']},
+{id:'med_dm_history',label:'History of diabetes?',type:'select',options:['No','Type 1','Type 2','Pre-diabetic','Unknown']},
+{id:'med_lipid_history',label:'History of dyslipidemia?',type:'select',options:['No','Yes','Unknown']},
+{id:'med_family_cvd',label:'Family history of premature CVD (M <55, F <65)',type:'select',options:['No','Yes','Unknown']},
+{id:'med_ckd',label:'Chronic kidney disease?',type:'select',options:['No','Yes (stage ___)','Unknown']},
+{id:'med_inactivity',label:'Physical inactivity?',type:'select',options:['Active','Moderately active','Sedentary']},
+{id:'med_hba1c',label:'HbA1c / Fasting glucose (if known)',type:'text'},
+{id:'med_lipids',label:'Lipid profile — LDL / HDL / TG (if known)',type:'text'},
+{id:'med_egfr',label:'eGFR / Creatinine (if known)',type:'text'}
+]},
+{id:'medicine-resp-risk',title:'Respiratory Risk Assessment',fields:[
+{id:'med_resp_occupation',label:'Occupational lung exposure (asbestos, coal, dust, fumes)',type:'textarea'},
+{id:'med_resp_family',label:'Family history of asthma / TB / lung cancer',type:'textarea'},
+{id:'med_tb_contact',label:'TB contact history',type:'select',options:['No','Yes — household','Yes — other','Unknown']},
+{id:'med_resp_screening',label:'Previous chest imaging / PFT findings',type:'textarea'}
 ]}
 ];
 
 const PAEDIATRIC_QUESTIONS = [
-{id:'antenatal-history',title:'Antenatal & Birth History',fields:[
-{id:'preg_duration',label:'Gestation at birth (weeks)',type:'number'},
-{id:'birth_type',label:'Type of delivery',type:'select',options:['Normal vaginal','C-section','Forceps','Vacuum','Breech']},
-{id:'birth_weight',label:'Birth weight (kg)',type:'text'},
-{id:'antenatal_complications',label:'Antenatal complications',type:'textarea',hint:'Maternal infections, medications, diabetes, hypertension'},
-{id:'perinatal_complications',label:'Perinatal complications',type:'textarea',hint:'Resuscitation needed, NICU stay, jaundice, hypoxia'},
-{id:'feeding_birth',label:'Feeding at birth',type:'select',options:['Breastfeeding','Formula','Mixed']}
+{id:'paed-patient-details',title:'Additional Patient Details',fields:[
+{id:'paed_father',label:'Father\'s Name',type:'text'},
+{id:'paed_informant',label:'Informant',type:'select',options:['Mother','Father','Grandparent','Guardian','Other']},
+{id:'paed_reliability',label:'Reliability of History',type:'select',options:['Reliable','Partially reliable','Unreliable']},
+{id:'paed_admitted_via',label:'Admitted via',type:'select',options:['OPD','Emergency','Referred','Private clinic']}
 ]},
-{id:'developmental-history',title:'Developmental Milestones',fields:[
-{id:'dev_motor',label:'Motor milestones (rolling, sitting, crawling, walking)',type:'textarea'},
-{id:'dev_speech',label:'Speech / language milestones',type:'textarea'},
-{id:'dev_social',label:'Social / behavioral milestones',type:'textarea'},
-{id:'dev_school',label:'School performance (if applicable)',type:'textarea'},
-{id:'dev_concerns',label:'Any developmental concerns?',type:'textarea'}
+{id:'antenatal-history',title:'Antenatal History',fields:[
+{id:'paed_preg_planned',label:'Pregnancy planned?',type:'select',options:['Planned','Unplanned','Unknown']},
+{id:'paed_anc_visits',label:'Number of ANC visits',type:'text'},
+{id:'paed_supplements',label:'Maternal supplements taken',type:'checkbox',options:['Iron','Folic acid','Calcium','Multivitamins','None']},
+{id:'paed_maternal_illness',label:'Maternal illness during pregnancy',type:'checkbox',options:['Hypertension','Diabetes','Pre-eclampsia','Eclampsia','Infections','Thyroid disease','None']},
+{id:'paed_maternal_drugs',label:'Maternal drug intake (dose/duration)',type:'textarea'},
+{id:'paed_antenatal_imaging',label:'Antenatal USG / Investigations',type:'textarea'},
+{id:'paed_antenatal_complications',label:'Other antenatal complications',type:'textarea',hint:'Bleeding, trauma, hospitalization during pregnancy'}
 ]},
-{id:'paediatric-feeding',title:'Feeding & Nutrition',fields:[
-{id:'feed_current',label:'Current feeding method',type:'select',options:['Breastfeeding','Formula','Mixed','Solid foods','Picky eater']},
-{id:'feed_freq',label:'Feeding frequency',type:'text'},
-{id:'feed_intake',label:'Estimated intake / appetite',type:'textarea'},
-{id:'feed_issues',label:'Feeding difficulties (reflux, vomiting, choking)',type:'textarea'},
-{id:'growth_params',label:'Growth parameters (weight, height, head circumference)',type:'textarea'}
+{id:'natal-history',title:'Natal History',fields:[
+{id:'paed_delivery_place',label:'Place of delivery',type:'select',options:['Hospital','Home','Clinic','Other']},
+{id:'paed_gestation',label:'Gestation at birth (weeks)',type:'number',attrs:{min:20,max:45}},
+{id:'paed_delivery_mode',label:'Mode of delivery',type:'select',options:['Spontaneous vaginal','C-section','Forceps','Vacuum','Breech']},
+{id:'paed_labour_duration',label:'Duration of labour',type:'text'},
+{id:'paed_delivery_complications',label:'Complications during delivery',type:'textarea'},
+{id:'paed_conducted_by',label:'Conducted by',type:'select',options:['Doctor','Midwife','Dai (TBA)','Other']}
 ]},
-{id:'paediatric-immunization',title:'Immunization & Screening',fields:[
-{id:'immunization_status',label:'Immunization status (up to date?)',type:'select',options:['Up to date','Partially immunized','Not immunized','Unknown']},
-{id:'immunization_details',label:'Immunization details / dates',type:'textarea'},
-{id:'newborn_screening',label:'Newborn screening results',type:'textarea'},
-{id:'paed_allergies',label:'Known allergies',type:'textarea'}
+{id:'postnatal-history',title:'Post-natal History',fields:[
+{id:'paed_postnatal_events',label:'Events at birth',type:'checkbox',options:['Cry at birth','Cyanosis','Fever','Fits','Jaundice','Rash','Birth injury','None']},
+{id:'paed_birth_weight',label:'Birth weight (kg)',type:'text'},
+{id:'paed_birth_length',label:'Birth length (cm)',type:'text'},
+{id:'paed_birth_hc',label:'Head circumference at birth (cm)',type:'text'},
+{id:'paed_perinatal_complications',label:'Perinatal complications',type:'textarea',hint:'Resuscitation needed, NICU stay, hypoxia, sepsis, hypoglycemia'},
+{id:'paed_feeding_birth',label:'Feeding at birth',type:'select',options:['Breastfeeding','Formula','Mixed']},
+{id:'paed_first_feed_time',label:'Time between birth and 1st feed',type:'text',hint:'hours'}
 ]},
-{id:'paediatric-review',title:'Paediatric Review of Systems',fields:[
-{id:'paed_growth',label:'Growth concerns (short stature, failure to thrive, obesity)',type:'textarea'},
-{id:'paed_sleep',label:'Sleep patterns / disturbances',type:'textarea'},
-{id:'paed_toileting',label:'Toilet training status',type:'textarea'},
-{id:'paed_behaviour',label:'Behavioral concerns',type:'textarea'},
-{id:'paed_infections',label:'Recurrent infections?',type:'textarea'},
-{id:'paed_hospitalizations',label:'Previous hospitalizations / surgeries',type:'textarea'}
+{id:'paed-feeding',title:'Feeding & Nutrition',fields:[
+{id:'paed_feed_type',label:'Type of feed (first 6 months)',type:'select',options:['Breastfeeding','Formula','Mixed']},
+{id:'paed_breastfeeding_duration',label:'Duration of breastfeeding',type:'text',hint:'months'},
+{id:'paed_solids_age',label:'Age at which solid food introduced',type:'text',hint:'months'},
+{id:'paed_solids_detail',label:'Nature / amount / duration of solids',type:'textarea'},
+{id:'paed_current_diet',label:'Current diet',type:'textarea'},
+{id:'paed_appetite',label:'Appetite',type:'select',options:['Normal','Decreased','Increased','Picky eater']},
+{id:'paed_feed_issues',label:'Feeding difficulties',type:'checkbox',options:['Reflux','Vomiting','Choking','Colic','Poor weight gain','None']},
+{id:'paed_growth_params',label:'Current growth parameters',type:'textarea',hint:'Weight, height, head circumference with percentiles if available'}
+]},
+{id:'paed-immunization',title:'Immunization History',fields:[
+{id:'paed_immunization_status',label:'Immunization status',type:'select',options:['Up to date','Partially immunized','Not immunized','Unknown']},
+{id:'paed_bcg',label:'BCG',type:'select',options:['Given','Not given','Unknown']},
+{id:'paed_penta',label:'Pentavalent (DTP-HepB-Hib) doses',type:'text',hint:'Number of doses'},
+{id:'paed_polio',label:'Polio (OPV/IPV) doses',type:'text',hint:'Number of doses'},
+{id:'paed_pcv',label:'PCV (Pneumococcal) doses',type:'text',hint:'Number of doses'},
+{id:'paed_rotavirus',label:'Rotavirus doses',type:'text',hint:'Number of doses'},
+{id:'paed_mmr',label:'MMR given?',type:'select',options:['Given','Not given','Unknown']},
+{id:'paed_typhoid',label:'Typhoid vaccine',type:'select',options:['Given','Not given','Unknown']},
+{id:'paed_hepa',label:'Hepatitis A',type:'select',options:['Given','Not given','Unknown']},
+{id:'paed_influenza',label:'Influenza vaccine',type:'select',options:['Given','Not given','Unknown']},
+{id:'paed_vaccine_side_effects',label:'Vaccine side effects',type:'textarea'},
+{id:'paed_immunization_details',label:'Additional immunization details',type:'textarea'}
+]},
+{id:'paed-development',title:'Developmental Milestones',fields:[
+{id:'paed_dev_social_smile',label:'Social smile (expected: 4-6 weeks)',type:'text',hint:'Age achieved'},
+{id:'paed_dev_gaze',label:'Follows with eyes / fixes (expected: 2-3 months)',type:'text',hint:'Age achieved'},
+{id:'paed_dev_neck_hold',label:'Neck holding (expected: 3-4 months)',type:'text',hint:'Age achieved'},
+{id:'paed_dev_rolling',label:'Rolls over (expected: 4-6 months)',type:'text',hint:'Age achieved'},
+{id:'paed_dev_sit',label:'Sits without support (expected: 6-8 months)',type:'text',hint:'Age achieved'},
+{id:'paed_dev_crawl',label:'Crawls (expected: 7-9 months)',type:'text',hint:'Age achieved'},
+{id:'paed_dev_stand',label:'Stands with support (expected: 8-10 months)',type:'text',hint:'Age achieved'},
+{id:'paed_dev_walk',label:'Walks independently (expected: 12-15 months)',type:'text',hint:'Age achieved'},
+{id:'paed_dev_speech_syllables',label:'Syllables / babbling (expected: 6-9 months)',type:'text',hint:'Age achieved'},
+{id:'paed_dev_speech_words',label:'Single words with meaning (expected: 12-15 months)',type:'text',hint:'Age achieved'},
+{id:'paed_dev_speech_phrases',label:'Two-word phrases (expected: 18-24 months)',type:'text',hint:'Age achieved'},
+{id:'paed_dev_toilet',label:'Toilet training achieved',type:'text',hint:'Age'},
+{id:'paed_dev_school',label:'School performance (if applicable)',type:'textarea'},
+{id:'paed_dev_concerns',label:'Any developmental concerns / regression?',type:'textarea'}
+]},
+{id:'paed-transfusion',title:'Transfusion History',fields:[
+{id:'paed_transfusion_type',label:'Type of transfusion',type:'select',options:['None','Red blood cells','Platelets','FFP / Plasma','Whole blood','Other']},
+{id:'paed_transfusion_times',label:'Number of transfusions',type:'number',attrs:{min:0}},
+{id:'paed_transfusion_screened',label:'Screening done?',type:'select',options:['Yes','No','Unknown']},
+{id:'paed_transfusion_reaction',label:'Any transfusion reaction?',type:'textarea'}
+]},
+{id:'paed-personal-history',title:'Personal & Social History',fields:[
+{id:'paed_school',label:'School / Grade',type:'text'},
+{id:'paed_sleep',label:'Sleep pattern',type:'select',options:['Normal','Disturbed','Excessive','Night terrors','Insomnia']},
+{id:'paed_habits',label:'Habits / Behaviours',type:'checkbox',options:['Pica','Thumb-sucking','Nail-biting','Temper tantrums','Head banging','None']},
+{id:'paed_home_type',label:'Home type',type:'select',options:['Pucca (brick)','Semi-pucca','Kacha (mud)','Apartment']},
+{id:'paed_rooms',label:'Number of rooms',type:'number',attrs:{min:1}},
+{id:'paed_family_members',label:'Number of family members',type:'number',attrs:{min:1}},
+{id:'paed_siblings',label:'Siblings (number / ages / health)',type:'textarea'},
+{id:'paed_water_source',label:'Water source',type:'select',options:['Tap (filtered)','Tap (unfiltered)','Well / Borehole','Bottled','Tanker']},
+{id:'paed_pets',label:'Pets at home?',type:'select',options:['Yes','No']},
+{id:'paed_household_smoking',label:'Smoking in household?',type:'select',options:['Yes','No']},
+{id:'paed_toilet_type',label:'Type of toilet',type:'select',options:['Flush','Pit latrine','Open defecation']}
+]},
+{id:'paed-family-history',title:'Family Medical History',fields:[
+{id:'paed_mother_age_illness',label:'Mother — Age / Illness',type:'text'},
+{id:'paed_father_age_illness',label:'Father — Age / Illness',type:'text'},
+{id:'paed_siblings_illness',label:'Siblings — Illness / health issues',type:'textarea'},
+{id:'paed_miscarriages',label:'Miscarriages / Abortions / Stillbirths in family',type:'textarea'},
+{id:'paed_consanguinity',label:'Consanguinity (parents related?)',type:'select',options:['No','Yes — 1st cousin','Yes — 2nd cousin','Yes — distant']},
+{id:'paed_hereditary',label:'Hereditary / genetic disorders in family',type:'textarea'},
+{id:'paed_family_mental',label:'Family psychiatric history',type:'textarea'}
+]},
+{id:'paed-review',title:'Paediatric Review of Systems',fields:[
+{id:'paed_cns',label:'CNS',type:'checkbox',options:['Fever','Febrile fits','Afebrile fits','Involuntary movements','Lethargy','Unconsciousness','Numbness','Visual change','Falls','Headache','None']},
+{id:'paed_cvs',label:'CVS',type:'checkbox',options:['SOB episodic','SOB persistent','SOB on exertion','SOB on feeding','Cyanosis','Squatting','Chest pain','Palpitation','Joint pain','Edema','None']},
+{id:'paed_respiratory',label:'Respiratory',type:'checkbox',options:['Sore throat','Earache','Chest infection','Aspiration','Hemoptysis','Wheeze','Nocturnal cough','Exertional cough','Dry cough','None']},
+{id:'paed_sputum',label:'Sputum — colour / smell / consistency',type:'text'},
+{id:'paed_feed_relation',label:'Relation of symptoms with feeding',type:'textarea'},
+{id:'paed_git',label:'GIT',type:'checkbox',options:['Abdominal pain','Jaundice','Diarrhea','Constipation','Blood in stool','Vomiting','None']},
+{id:'paed_vomiting_detail',label:'Vomiting — Frequency / Force / Colour / Content',type:'text'},
+{id:'paed_gus',label:'GUS',type:'checkbox',options:['Weak stream','Dysuria','Nocturia','Enuresis','Hematuria','Incontinence','None']},
+{id:'paed_rheum',label:'Rheumatological',type:'checkbox',options:['Joint swelling','Dry mouth','Oral ulcers','Sore eyes','Hair loss','Cold extremity','Rash','None']},
+{id:'paed_growth_concerns',label:'Growth concerns (short stature, failure to thrive, obesity)',type:'textarea'},
+{id:'paed_weight_change',label:'Weight loss / gain?',type:'select',options:['Stable','Weight loss','Weight gain','Unknown']}
 ]}
 ];
 
@@ -312,8 +432,7 @@ function getSteps(s){const b=JSON.parse(JSON.stringify(BASE_STEPS)),e=getSpecial
 
 function startAssessment(s){currentSpecialty=s;currentStep=0;formData={};steps=getSteps(s);document.getElementById('specialty-selector').classList.add('hidden');document.getElementById('assessment-view').classList.remove('hidden');document.getElementById('summary-view').classList.add('hidden');renderStep()}
 
-function renderStep(){const step=steps[currentStep];if(!step)return;renderStepIndicator();updateProgress();const c=document.getElementById('step-content');let html='<h2>'+(currentStep+1)+'. '+step.title+'</h2>';step.fields.forEach(f=>{const v=formData[f.id]||'',req=f.required?'required':'',hint=f.hint?'<div class="hint">'+f.hint+'</div>':'',attrs=f.attrs?Object.entries(f.attrs).map(([k,v])=>k+'="'+v+'"').join(' '):'';html+='<div class="form-group"><label for="'+f.id+'">'+f.label+(f.required?' <span style="color:#e53e3e">*</span>':'')+'</label>'+hint;switch(f.type){case'textarea':html+='<textarea id="'+f.id+'" name="'+f.id+'" '+req+' '+attrs+'>'+v+'</textarea>';break;case'select':html+='<select id="'+f.id+'" name="'+f.id+'" '+req+'><option value="">-- Select --</option>';(f.options||[]).forEach(o=>{html+='<option value="'+o+'"'+(v===o?'selected':'')+'>'+o+'</option>'})
-html+='</select>';break;case'checkbox':const vals=Array.isArray(v)?v:[];html+='<div class="checkbox-group">';(f.options||[]).forEach(o=>{html+='<label><input type="checkbox" name="'+f.id+'" value="'+o+'"'+(vals.includes(o)?'checked':'')+'> '+o+'</label>'});html+='</div>';break;case'radio':html+='<div class="radio-group">';(f.options||[]).forEach(o=>{html+='<label><input type="radio" name="'+f.id+'" value="'+o+'"'+(v===o?'checked':'')+' '+req+'> '+o+'</label>'});html+='</div>';break;default:html+='<input type="'+f.type+'" id="'+f.id+'" name="'+f.id+'" value="'+v+'" '+req+' '+attrs+'>'}html+='</div>'})
+function renderStep(){const step=steps[currentStep];if(!step)return;renderStepIndicator();updateProgress();const c=document.getElementById('step-content');let html='<h2>'+(currentStep+1)+'. '+step.title+'</h2>';step.fields.forEach(f=>{const v=formData[f.id]||'',req=f.required?'required':'',hint=f.hint?'<div class="hint">'+f.hint+'</div>':'',attrs=f.attrs?Object.entries(f.attrs).map(([k,v])=>k+'="'+v+'"').join(' '):'';html+='<div class="form-group"><label for="'+f.id+'">'+f.label+(f.required?' <span style="color:#e53e3e">*</span>':'')+'</label>'+hint;switch(f.type){case'textarea':html+='<textarea id="'+f.id+'" name="'+f.id+'" '+req+' '+attrs+'>'+v+'</textarea>';break;case'select':html+='<select id="'+f.id+'" name="'+f.id+'" '+req+'><option value="">-- Select --</option>';(f.options||[]).forEach(o=>{html+='<option value="'+o+'"'+(v===o?'selected':'')+'>'+o+'</option>'});html+='</select>';break;case'checkbox':const vals=Array.isArray(v)?v:[];html+='<div class="checkbox-group">';(f.options||[]).forEach(o=>{html+='<label><input type="checkbox" name="'+f.id+'" value="'+o+'"'+(vals.includes(o)?'checked':'')+'> '+o+'</label>'});html+='</div>';break;case'radio':html+='<div class="radio-group">';(f.options||[]).forEach(o=>{html+='<label><input type="radio" name="'+f.id+'" value="'+o+'"'+(v===o?'checked':'')+' '+req+'> '+o+'</label>'});html+='</div>';break;default:html+='<input type="'+f.type+'" id="'+f.id+'" name="'+f.id+'" value="'+v+'" '+req+' '+attrs+'>'}html+='</div>'})
 c.innerHTML=html;document.getElementById('prev-btn').disabled=currentStep===0;document.getElementById('next-btn').classList.toggle('hidden',currentStep>=steps.length-1);document.getElementById('submit-btn').classList.toggle('hidden',currentStep<steps.length-1)}
 
 function renderStepIndicator(){const c=document.getElementById('step-indicator');let h='';steps.forEach((s,i)=>{let c='step-dot';if(i===currentStep)c+=' active';else if(i<currentStep)c+=' completed';h+='<div class="'+c+'" onclick="goToStep('+i+')">'+(i+1)+'. '+s.title+'</div>'});c.innerHTML=h}
