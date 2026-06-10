@@ -66,22 +66,27 @@ function startAssessment(specialty) {
   document.getElementById('toolbar-specialty').textContent = 'Specialty: ' + name;
   document.getElementById('toolbar-condition').textContent = '';
 
+  startClock();
   renderForm();
+}
+
+function startClock() {
+  var el = document.getElementById('realtime-clock');
+  if (!el) return;
+  function tick() {
+    var now = new Date();
+    var pad = function (n) { return String(n).padStart(2, '0'); };
+    var dateStr = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+    var timeStr = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+    el.textContent = dateStr + '  ' + timeStr;
+  }
+  tick();
+  if (window._clockInterval) clearInterval(window._clockInterval);
+  window._clockInterval = setInterval(tick, 1000);
 }
 
 function renderForm() {
   const container = document.getElementById('form-content');
-  var now = new Date();
-  var pad = function (n) { return String(n).padStart(2, '0'); };
-  var dateStr = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
-  var timeStr = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
-
-  let html = '<div class="section-card">';
-  html += '<div class="section-title" style="display:flex;gap:24px;flex-wrap:wrap">';
-  html += '<span>Date: ' + dateStr + '</span>';
-  html += '<span>Time: ' + timeStr + '</span>';
-  html += '</div></div>';
-
   steps.forEach((step, i) => {
     html += renderSection(step, i + 1);
   });
@@ -301,4 +306,5 @@ function resetApp() {
   document.getElementById('specialty-selector').classList.remove('hidden');
   document.getElementById('form-view').classList.add('hidden');
   document.getElementById('toolbar-condition').textContent = '';
+  if (window._clockInterval) clearInterval(window._clockInterval);
 }
