@@ -160,6 +160,11 @@ function renderSection(step, number) {
     html += '</div>';
   });
 
+  html += '<div class="form-group" style="margin-top:12px">';
+  html += '<label for="detail_' + step.id + '">Further Details</label>';
+  html += '<textarea id="detail_' + step.id + '" name="detail_' + step.id + '" style="min-height:50px" placeholder="Additional notes for this section...">' + esc(formData['detail_' + step.id] || '') + '</textarea>';
+  html += '</div>';
+
   html += '</div>';
   return html;
 }
