@@ -124,12 +124,15 @@ function renderSection(step, number) {
     html += '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end">';
     html += '<div class="form-group" style="flex:2;min-width:180px;margin-bottom:0">';
     html += '<label for="new_complaint_name">Add Complaint</label>';
-    html += '<select id="new_complaint_name">';
+    html += '<select id="new_complaint_name" onchange="toggleCustomComplaint()">';
     html += '<option value="">-- Select --</option>';
     Object.keys(COMPLAINTS).forEach(function (name) {
       html += '<option value="' + esc(name) + '">' + esc(name) + '</option>';
     });
-    html += '</select></div>';
+    html += '<option value="__other__">Other (type your own)</option>';
+    html += '</select>';
+    html += '<input type="text" id="new_complaint_custom" style="display:none;margin-top:6px" placeholder="Enter your complaint">';
+    html += '</div>';
     html += '<div class="form-group" style="flex:1;min-width:120px;margin-bottom:0">';
     html += '<label for="new_complaint_duration">Since / For</label>';
     html += '<input type="text" id="new_complaint_duration" placeholder="e.g. 3 days">';
@@ -244,13 +247,23 @@ function renderComplaintItems() {
   return html;
 }
 
+function toggleCustomComplaint() {
+  const sel = document.getElementById('new_complaint_name');
+  const custom = document.getElementById('new_complaint_custom');
+  custom.style.display = sel.value === '__other__' ? 'block' : 'none';
+}
+
 function addComplaint() {
-  const name = document.getElementById('new_complaint_name').value;
+  const sel = document.getElementById('new_complaint_name');
+  const custom = document.getElementById('new_complaint_custom');
   const duration = document.getElementById('new_complaint_duration').value;
+  var name = sel.value === '__other__' ? custom.value.trim() : sel.value;
   if (!name || !duration.trim()) return;
   if (!formData.complaints) formData.complaints = [];
   formData.complaints.push({ name: name, duration: duration });
-  document.getElementById('new_complaint_name').value = '';
+  sel.value = '';
+  custom.value = '';
+  custom.style.display = 'none';
   document.getElementById('new_complaint_duration').value = '';
   refreshComplaints();
 }
