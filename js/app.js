@@ -239,14 +239,44 @@ function copyJSON() {
       output.data[key] = val;
     }
   });
-  navigator.clipboard.writeText(JSON.stringify(output, null, 2)).then(() => {
+  const text = JSON.stringify(output, null, 2);
+  copyText(text);
+}
+
+function copyText(text) {
+  const done = function () {
     const btn = document.querySelector('[onclick="copyJSON()"]');
     const orig = btn.textContent;
     btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = orig, 2000);
-  }).catch(e => {
-    alert('Copy failed: ' + e.message);
-  });
+    setTimeout(function () { btn.textContent = orig; }, 2000);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function () {
+      fallbackCopy(text, done);
+    });
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+
+function fallbackCopy(text, done) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    if (document.execCommand('copy')) {
+      done();
+    } else {
+      alert('Copy failed. Please select the JSON manually (browser restriction). Use HTTPS or localhost.');
+    }
+  } catch (e) {
+    alert('Copy failed: ' + e.message + '. Use HTTPS or localhost, or copy manually.');
+  }
+  document.body.removeChild(ta);
 }
 
 function resetApp() {
