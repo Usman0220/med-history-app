@@ -93,20 +93,6 @@ const BASE_STEPS = [
     description: 'Add presenting complaints with duration. Select a complaint type and fill its specific history details.'
   },
   {
-    id: 'hopi',
-    title: 'History of Presenting Illness',
-    fields: [
-      { id: 'site', label: 'Site / Location', type: 'text' },
-      { id: 'character', label: 'Character (quality of symptom)', type: 'textarea' },
-      { id: 'radiation', label: 'Radiation (does it spread?)', type: 'text' },
-      { id: 'assoc_symptoms', label: 'Associated symptoms', type: 'textarea' },
-      { id: 'timing', label: 'Timing / frequency', type: 'textarea' },
-      { id: 'exacerbating', label: 'What makes it worse?', type: 'textarea' },
-      { id: 'relieving', label: 'What makes it better?', type: 'textarea' },
-      { id: 'previous_episodes', label: 'Previous similar episodes?', type: 'text' },
-      { id: 'treatment_tried', label: 'Any treatment tried?', type: 'textarea' }
-    ]
-  },
   {
     id: 'pmh',
     title: 'Past Medical History',
@@ -1450,17 +1436,31 @@ function renderSection(step, number) {
   return html;
 }
 
+var HOPI_FIELDS = [
+  { id: 'site', label: 'Site / Location', type: 'text' },
+  { id: 'character', label: 'Character (quality)', type: 'textarea' },
+  { id: 'radiation', label: 'Radiation', type: 'text', hint: 'Does it spread anywhere?' },
+  { id: 'assoc_symptoms', label: 'Associated symptoms', type: 'textarea' },
+  { id: 'timing', label: 'Timing / frequency', type: 'textarea' },
+  { id: 'exacerbating', label: 'What makes it worse?', type: 'textarea' },
+  { id: 'relieving', label: 'What makes it better?', type: 'textarea' },
+  { id: 'previous_episodes', label: 'Previous similar episodes?', type: 'text' },
+  { id: 'treatment_tried', label: 'Any treatment tried?', type: 'textarea' }
+];
+
 function renderComplaintItems() {
   const complaints = formData.complaints || [];
   if (!complaints.length) return '<p style="color:#a0aec0;font-size:0.85rem">No complaints added yet.</p>';
   let html = '';
   complaints.forEach(function (c, i) {
+    var cid = c._id;
     html += '<div class="complaint-item" style="margin-bottom:16px;padding:12px;background:#f7fafc;border-radius:6px;border:1px solid #e2e8f0">';
     html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
     html += '<div><strong>' + esc(c.name) + '</strong> <span style="color:#718096;font-size:0.85rem">(Since: ' + esc(c.duration) + ')</span></div>';
     html += '<button onclick="removeComplaint(' + i + ')" style="background:none;border:1px solid #e53e3e;color:#e53e3e;border-radius:4px;padding:2px 10px;cursor:pointer;font-size:0.8rem">Remove</button>';
     html += '</div>';
-    const complaintFields = COMPLAINTS[c.name] || [];
+
+    var complaintFields = COMPLAINTS[c.name] || [];
     complaintFields.forEach(function (field) {
       const value = formData[field.id] !== undefined ? formData[field.id] : (field.type === 'checkbox' ? [] : '');
       const required = field.required ? 'required' : '';
@@ -1493,6 +1493,44 @@ function renderComplaintItems() {
       }
       html += '</div>';
     });
+
+    html += '<div style="margin-top:12px;padding-top:10px;border-top:1px solid #e2e8f0">';
+    html += '<div style="font-size:0.85rem;font-weight:600;color:#2b6cb0;margin-bottom:8px">History of Presenting Illness - ' + esc(c.name) + '</div>';
+    HOPI_FIELDS.forEach(function (field) {
+      var fid = 'hopi_' + cid + '_' + field.id;
+      const value = formData[fid] !== undefined ? formData[fid] : (field.type === 'checkbox' ? [] : '');
+      const required = field.required ? 'required' : '';
+      const hint = field.hint ? '<div class="hint">' + esc(field.hint) + '</div>' : '';
+      html += '<div class="form-group">';
+      html += '<label for="' + fid + '">' + esc(field.label) + '</label>';
+      html += hint;
+      switch (field.type) {
+        case 'textarea':
+          html += '<textarea id="' + fid + '" name="' + fid + '" ' + required + '>' + esc(value) + '</textarea>';
+          break;
+        case 'select':
+          html += '<select id="' + fid + '" name="' + fid + '" ' + required + '>';
+          html += '<option value="">-- Select --</option>';
+          (field.options || []).forEach(function (opt) {
+            html += '<option value="' + esc(opt) + '"' + (value === opt ? ' selected' : '') + '>' + esc(opt) + '</option>';
+          });
+          html += '</select>';
+          break;
+        case 'checkbox':
+          const vals = Array.isArray(value) ? value : [];
+          html += '<div class="checkbox-group">';
+          (field.options || []).forEach(function (opt) {
+            html += '<label><input type="checkbox" name="' + fid + '" value="' + esc(opt) + '"' + (vals.includes(opt) ? ' checked' : '') + '> ' + esc(opt) + '</label>';
+          });
+          html += '</div>';
+          break;
+        default:
+          html += '<input type="' + (field.type || 'text') + '" id="' + fid + '" name="' + fid + '" value="' + esc(value) + '" ' + required + '>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+
     html += '</div>';
   });
   return html;
@@ -1511,13 +1549,16 @@ function addComplaint() {
   var name = sel.value === '__other__' ? custom.value.trim() : sel.value;
   if (!name || !duration.trim()) return;
   if (!formData.complaints) formData.complaints = [];
-  formData.complaints.push({ name: name, duration: duration });
+  formData.complaints.push({ _id: nextId(), name: name, duration: duration });
   sel.value = '';
   custom.value = '';
   custom.style.display = 'none';
   document.getElementById('new_complaint_duration').value = '';
   refreshComplaints();
 }
+
+var _nextId = 0;
+function nextId() { return 'c' + (++_nextId); }
 
 function removeComplaint(index) {
   if (!formData.complaints) return;

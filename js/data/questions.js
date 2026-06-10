@@ -20,21 +20,6 @@ const BASE_STEPS = [
     description: 'Add presenting complaints with duration. Select a complaint type and fill its specific history details.'
   },
   {
-    id: 'hopi',
-    title: 'History of Presenting Illness',
-    fields: [
-      { id: 'site', label: 'Site / Location', type: 'text' },
-      { id: 'character', label: 'Character (quality of symptom)', type: 'textarea' },
-      { id: 'radiation', label: 'Radiation (does it spread?)', type: 'text' },
-      { id: 'assoc_symptoms', label: 'Associated symptoms', type: 'textarea' },
-      { id: 'timing', label: 'Timing / frequency', type: 'textarea' },
-      { id: 'exacerbating', label: 'What makes it worse?', type: 'textarea' },
-      { id: 'relieving', label: 'What makes it better?', type: 'textarea' },
-      { id: 'previous_episodes', label: 'Previous similar episodes?', type: 'text' },
-      { id: 'treatment_tried', label: 'Any treatment tried?', type: 'textarea' }
-    ]
-  },
-  {
     id: 'pmh',
     title: 'Past Medical History',
     fields: [
