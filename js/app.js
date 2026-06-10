@@ -71,7 +71,16 @@ function startAssessment(specialty) {
 
 function renderForm() {
   const container = document.getElementById('form-content');
-  let html = '';
+  var now = new Date();
+  var pad = function (n) { return String(n).padStart(2, '0'); };
+  var dateStr = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+  var timeStr = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+
+  let html = '<div class="section-card">';
+  html += '<div class="section-title" style="display:flex;gap:24px;flex-wrap:wrap">';
+  html += '<span>Date: ' + dateStr + '</span>';
+  html += '<span>Time: ' + timeStr + '</span>';
+  html += '</div></div>';
 
   steps.forEach((step, i) => {
     html += renderSection(step, i + 1);
