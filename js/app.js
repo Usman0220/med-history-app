@@ -78,7 +78,10 @@ function renderForm() {
   });
 
   html += '<div id="disease-steps-container"></div>';
-  html += '<div style="text-align:center;padding:20px 0 40px"><button class="btn btn-primary" onclick="printForm()" style="padding:14px 40px;font-size:1rem">Print / Save PDF</button></div>';
+  html += '<div style="text-align:center;padding:20px 0 40px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">';
+  html += '<button class="btn btn-primary" onclick="printForm()" style="padding:14px 40px;font-size:1rem">Print / Save PDF</button>';
+  html += '<button class="btn btn-secondary" onclick="copyJSON()" style="padding:14px 24px;font-size:1rem">Copy as JSON</button>';
+  html += '</div>';
 
   container.innerHTML = html;
   restoreValues();
@@ -222,6 +225,28 @@ function updateConditionLabel() {
 
 function printForm() {
   window.print();
+}
+
+function copyJSON() {
+  const output = {
+    specialty: currentSpecialty,
+    date: new Date().toISOString(),
+    data: {}
+  };
+  Object.keys(formData).forEach(key => {
+    const val = formData[key];
+    if (val && (typeof val === 'string' ? val.trim() !== '' : val.length > 0)) {
+      output.data[key] = val;
+    }
+  });
+  navigator.clipboard.writeText(JSON.stringify(output, null, 2)).then(() => {
+    const btn = document.querySelector('[onclick="copyJSON()"]');
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  }).catch(() => {
+    alert('Failed to copy to clipboard');
+  });
 }
 
 function resetApp() {
