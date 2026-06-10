@@ -20,7 +20,7 @@ header p{color:#718096;font-size:0.9rem}
 .form-toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;background:#fff;border:2px solid #2b6cb0;border-radius:8px;padding:12px 20px;margin-bottom:20px;position:sticky;top:8px;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
 .toolbar-info{display:flex;flex-direction:column;gap:2px;font-weight:600;color:#2b6cb0;font-size:.95rem}
 .toolbar-condition{font-weight:400;color:#48bb78;font-size:.85rem}
-.toolbar-actions{display:flex;gap:8px}
+
 .section-card{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #2b6cb0;border-radius:6px;padding:16px 20px 20px;margin-bottom:14px;page-break-inside:avoid}
 .section-card .section-title{font-size:1rem;font-weight:600;color:#2b6cb0;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #e2e8f0}
 .section-card .section-number{display:inline-block;background:#2b6cb0;color:#fff;width:20px;height:20px;border-radius:50%;text-align:center;font-size:.7rem;line-height:20px;margin-right:8px;flex-shrink:0}
@@ -39,7 +39,7 @@ header p{color:#718096;font-size:0.9rem}
 .btn-secondary{background:#e2e8f0;color:#4a5568}
 .btn-secondary:hover{background:#cbd5e0}
 @media print{body{background:#fff}.specialty-selector{display:none!important}.form-toolbar{display:none!important}.specialty-btn{display:none!important}header p{display:none}.app-container{padding:0;max-width:100%}.section-card{border:1px solid #ddd;page-break-inside:avoid}.form-group input,.form-group textarea,.form-group select{border:none;border-bottom:1px solid #ddd}}
-@media(max-width:600px){.specialty-grid{grid-template-columns:1fr}.app-container{padding:10px}header h1{font-size:1.4rem}.form-toolbar{flex-direction:column;align-items:flex-start;position:static}.section-card{padding:12px 14px 16px}.toolbar-actions{width:100%}.toolbar-actions .btn{flex:1;text-align:center}}
+@media(max-width:600px){.specialty-grid{grid-template-columns:1fr}.app-container{padding:10px}header h1{font-size:1.4rem}.form-toolbar{flex-direction:column;align-items:flex-start;position:static}.section-card{padding:12px 14px 16px}}}
 </style>
 </head>
 <body>
@@ -62,9 +62,6 @@ header p{color:#718096;font-size:0.9rem}
 <div class="toolbar-info">
 <span id="toolbar-specialty"></span>
 <span id="toolbar-condition" class="toolbar-condition"></span>
-</div>
-<div class="toolbar-actions">
-<button class="btn btn-primary" onclick="printForm()">Print / Save PDF</button>
 </div>
 </div>
 <div id="form-content"></div>
@@ -1260,6 +1257,7 @@ function renderForm() {
   });
 
   html += '<div id="disease-steps-container"></div>';
+  html += '<div style="text-align:center;padding:20px 0 40px"><button class="btn btn-primary" onclick="printForm()" style="padding:14px 40px;font-size:1rem">Print / Save PDF</button></div>';
 
   container.innerHTML = html;
   restoreValues();

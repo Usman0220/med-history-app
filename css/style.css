@@ -109,11 +109,6 @@ header p {
   font-size: 0.85rem;
 }
 
-.toolbar-actions {
-  display: flex;
-  gap: 8px;
-}
-
 .section-card {
   background: #fff;
   border: 1px solid #e2e8f0;
@@ -278,6 +273,5 @@ header p {
   .grid-2, .grid-3 { grid-template-columns: 1fr; }
   .col-span-2, .col-span-3 { grid-column: span 1; }
   .section-card { padding: 12px 14px 16px; }
-  .toolbar-actions { width: 100%; }
-  .toolbar-actions .btn { flex: 1; text-align: center; }
+
 }

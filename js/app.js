@@ -78,6 +78,7 @@ function renderForm() {
   });
 
   html += '<div id="disease-steps-container"></div>';
+  html += '<div style="text-align:center;padding:20px 0 40px"><button class="btn btn-primary" onclick="printForm()" style="padding:14px 40px;font-size:1rem">Print / Save PDF</button></div>';
 
   container.innerHTML = html;
   restoreValues();
