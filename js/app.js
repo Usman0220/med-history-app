@@ -2,6 +2,7 @@ let currentSpecialty = null;
 let currentStep = 0;
 let steps = [];
 let formData = {};
+let conditionStepId = 'select-condition';
 
 function getSpecialtyQuestions(specialty) {
   switch (specialty) {
@@ -13,10 +14,59 @@ function getSpecialtyQuestions(specialty) {
   }
 }
 
+function getDiseaseMap(specialty) {
+  switch (specialty) {
+    case 'surgery': return SURGERY_DISEASES || {};
+    case 'medicine': return MEDICINE_DISEASES || {};
+    case 'paediatric': return PAEDIATRIC_DISEASES || {};
+    case 'gynaeobs': return GYNAEOBS_DISEASES || {};
+    default: return {};
+  }
+}
+
+function getDiseaseSteps(specialty, diseaseId) {
+  const map = getDiseaseMap(specialty);
+  if (!map || !map[diseaseId]) return [];
+  return map[diseaseId].map(step => JSON.parse(JSON.stringify(step)));
+}
+
+function getDiseaseList(specialty) {
+  const map = getDiseaseMap(specialty);
+  return Object.keys(map);
+}
+
+function getConditionStep(specialty) {
+  const diseases = getDiseaseList(specialty);
+  if (!diseases.length) return null;
+  return {
+    id: conditionStepId,
+    title: 'Select Condition / Disease',
+    description: 'Choose the specific condition to get disease-focused history questions',
+    fields: [
+      { id: 'selected_condition', label: 'Condition', type: 'select', required: true,
+        options: ['None / General', ...diseases.map(d => d)] }
+    ]
+  };
+}
+
 function getSteps(specialty) {
   const base = JSON.parse(JSON.stringify(BASE_STEPS));
   const extra = getSpecialtyQuestions(specialty);
+  const condStep = getConditionStep(specialty);
+  if (condStep) {
+    return [...base, ...extra, condStep];
+  }
   return [...base, ...extra];
+}
+
+function injectConditionSteps() {
+  const condition = formData.selected_condition;
+  if (!condition || condition === 'None / General') return;
+  const diseaseSteps = getDiseaseSteps(currentSpecialty, condition);
+  if (!diseaseSteps.length) return;
+  const condIdx = steps.findIndex(s => s.id === conditionStepId);
+  if (condIdx === -1) return;
+  steps.splice(condIdx + 1, 0, ...diseaseSteps);
 }
 
 function startAssessment(specialty) {
@@ -41,6 +91,9 @@ function renderStep() {
 
   const container = document.getElementById('step-content');
   let html = `<h2>${currentStep + 1}. ${step.title}</h2>`;
+  if (step.description) {
+    html += `<p style="color:#718096;font-size:0.9rem;margin-bottom:16px;">${step.description}</p>`;
+  }
 
   step.fields.forEach(field => {
     const value = formData[field.id] || '';
@@ -118,7 +171,7 @@ function updateProgress() {
 
 function saveCurrentStep() {
   const step = steps[currentStep];
-  if (!step) return;
+  if (!step) return true;
 
   let allValid = true;
 
@@ -154,6 +207,11 @@ function saveCurrentStep() {
 
 function nextStep() {
   if (!saveCurrentStep()) return;
+
+  if (steps[currentStep] && steps[currentStep].id === conditionStepId) {
+    injectConditionSteps();
+  }
+
   if (currentStep < steps.length - 1) {
     currentStep++;
     renderStep();
@@ -193,6 +251,9 @@ function renderSummary() {
 
   let html = `<p><strong>Specialty:</strong> ${specialtyName}</p>`;
   html += `<p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>`;
+  if (formData.selected_condition && formData.selected_condition !== 'None / General') {
+    html += `<p><strong>Condition:</strong> ${formData.selected_condition}</p>`;
+  }
   html += `<hr style="margin: 12px 0; border-color: #e2e8f0;">`;
 
   steps.forEach(step => {
@@ -238,5 +299,3 @@ function resetApp() {
   document.getElementById('assessment-view').classList.add('hidden');
   document.getElementById('summary-view').classList.add('hidden');
 }
-
-
