@@ -10,54 +10,39 @@
   <div class="app-container">
     <header>
       <h1>MedHistory</h1>
-      <p>Step-by-step medical history assistant</p>
+      <p>Medical history documentation form</p>
     </header>
 
     <div id="specialty-selector" class="card">
       <h2>Select Specialty</h2>
       <div class="specialty-grid">
-        <button class="specialty-btn" data-specialty="surgery" onclick="startAssessment('surgery')">
+        <button class="specialty-btn" onclick="startAssessment('surgery')">
           <span>Surgery</span>
         </button>
-        <button class="specialty-btn" data-specialty="medicine" onclick="startAssessment('medicine')">
+        <button class="specialty-btn" onclick="startAssessment('medicine')">
           <span>Medicine</span>
         </button>
-        <button class="specialty-btn" data-specialty="paediatric" onclick="startAssessment('paediatric')">
+        <button class="specialty-btn" onclick="startAssessment('paediatric')">
           <span>Paediatrics</span>
         </button>
-        <button class="specialty-btn" data-specialty="gynaeobs" onclick="startAssessment('gynaeobs')">
+        <button class="specialty-btn" onclick="startAssessment('gynaeobs')">
           <span>Gynae / Obstetrics</span>
         </button>
       </div>
     </div>
 
-    <div id="assessment-view" class="hidden">
-      <div class="progress-container">
-        <div id="progress-bar" class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
-        <span id="progress-text">Step 1 of 10</span>
-      </div>
-
-      <div id="step-indicator" class="step-indicator"></div>
-
-      <div id="step-content" class="card"></div>
-
-      <div class="nav-buttons">
-        <button id="prev-btn" class="btn btn-secondary" onclick="prevStep()" disabled>Previous</button>
-        <button id="next-btn" class="btn btn-primary" onclick="nextStep()">Next</button>
-        <button id="submit-btn" class="btn btn-success hidden" onclick="submitAssessment()">Complete</button>
-      </div>
-    </div>
-
-    <div id="summary-view" class="hidden">
-      <div class="card">
-        <h2>Medical History Summary</h2>
-        <div id="summary-content"></div>
-        <div class="summary-actions">
-          <button class="btn btn-primary" onclick="printSummary()">Print</button>
-          <button class="btn btn-success" onclick="savePDF()">Save as PDF</button>
+    <div id="form-view" class="hidden">
+      <div class="form-toolbar">
+        <div class="toolbar-info">
+          <span id="toolbar-specialty"></span>
+          <span id="toolbar-condition" class="toolbar-condition"></span>
+        </div>
+        <div class="toolbar-actions">
+          <button class="btn btn-primary" onclick="printForm()">Print / Save PDF</button>
           <button class="btn btn-secondary" onclick="resetApp()">New Assessment</button>
         </div>
       </div>
+      <div id="form-content"></div>
     </div>
   </div>
 
