@@ -228,9 +228,14 @@ function printForm() {
 }
 
 function copyJSON() {
+  var now = new Date();
+  var pad = function (n) { return String(n).padStart(2, '0'); };
+  var dateStr = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+  var timeStr = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
   const output = {
     specialty: currentSpecialty,
-    date: new Date().toISOString(),
+    date: dateStr,
+    time: timeStr,
     data: {}
   };
   Object.keys(formData).forEach(key => {
