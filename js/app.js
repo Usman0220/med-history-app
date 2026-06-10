@@ -87,7 +87,8 @@ function startClock() {
 
 function renderForm() {
   const container = document.getElementById('form-content');
-  steps.forEach((step, i) => {
+  let html = '';
+  steps.forEach(function (step, i) {
     html += renderSection(step, i + 1);
   });
 
@@ -117,7 +118,33 @@ function renderSection(step, number) {
     html += '<p style="color:#718096;font-size:0.85rem;margin-bottom:10px;">' + esc(step.description) + '</p>';
   }
 
-  step.fields.forEach(field => {
+  if (step.complaintBuilder) {
+    html += '<div id="complaint-items-container">' + renderComplaintItems() + '</div>';
+    html += '<div class="complaint-add-form" style="margin-top:16px;padding:12px;background:#f7fafc;border-radius:6px;border:1px dashed #cbd5e0">';
+    html += '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end">';
+    html += '<div class="form-group" style="flex:2;min-width:180px;margin-bottom:0">';
+    html += '<label for="new_complaint_name">Add Complaint</label>';
+    html += '<select id="new_complaint_name">';
+    html += '<option value="">-- Select --</option>';
+    Object.keys(COMPLAINTS).forEach(function (name) {
+      html += '<option value="' + esc(name) + '">' + esc(name) + '</option>';
+    });
+    html += '</select></div>';
+    html += '<div class="form-group" style="flex:1;min-width:120px;margin-bottom:0">';
+    html += '<label for="new_complaint_duration">Since / For</label>';
+    html += '<input type="text" id="new_complaint_duration" placeholder="e.g. 3 days">';
+    html += '</div>';
+    html += '<button class="btn btn-primary" onclick="addComplaint()" style="padding:8px 16px;margin-bottom:2px">Add</button>';
+    html += '</div></div>';
+    html += '<div class="form-group" style="margin-top:12px">';
+    html += '<label for="detail_chief-complaint">Further Details</label>';
+    html += '<textarea id="detail_chief-complaint" name="detail_chief-complaint" style="min-height:50px" placeholder="Additional notes for this section...">' + esc(formData['detail_chief-complaint'] || '') + '</textarea>';
+    html += '</div>';
+    html += '</div>';
+    return html;
+  }
+
+  step.fields.forEach(function (field) {
     const value = formData[field.id] !== undefined ? formData[field.id] : (field.type === 'checkbox' ? [] : '');
     const required = field.required ? 'required' : '';
     const hint = field.hint ? '<div class="hint">' + esc(field.hint) + '</div>' : '';
@@ -133,7 +160,7 @@ function renderSection(step, number) {
       case 'select':
         html += '<select id="' + field.id + '" name="' + field.id + '" ' + required + '>';
         html += '<option value="">-- Select --</option>';
-        (field.options || []).forEach(opt => {
+        (field.options || []).forEach(function (opt) {
           html += '<option value="' + esc(opt) + '"' + (value === opt ? ' selected' : '') + '>' + esc(opt) + '</option>';
         });
         html += '</select>';
@@ -141,14 +168,14 @@ function renderSection(step, number) {
       case 'checkbox':
         const vals = Array.isArray(value) ? value : [];
         html += '<div class="checkbox-group">';
-        (field.options || []).forEach(opt => {
+        (field.options || []).forEach(function (opt) {
           html += '<label><input type="checkbox" name="' + field.id + '" value="' + esc(opt) + '"' + (vals.includes(opt) ? ' checked' : '') + '> ' + esc(opt) + '</label>';
         });
         html += '</div>';
         break;
       case 'radio':
         html += '<div class="radio-group">';
-        (field.options || []).forEach(opt => {
+        (field.options || []).forEach(function (opt) {
           html += '<label><input type="radio" name="' + field.id + '" value="' + esc(opt) + '"' + (value === opt ? ' checked' : '') + ' ' + required + '> ' + esc(opt) + '</label>';
         });
         html += '</div>';
@@ -167,6 +194,78 @@ function renderSection(step, number) {
 
   html += '</div>';
   return html;
+}
+
+function renderComplaintItems() {
+  const complaints = formData.complaints || [];
+  if (!complaints.length) return '<p style="color:#a0aec0;font-size:0.85rem">No complaints added yet.</p>';
+  let html = '';
+  complaints.forEach(function (c, i) {
+    html += '<div class="complaint-item" style="margin-bottom:16px;padding:12px;background:#f7fafc;border-radius:6px;border:1px solid #e2e8f0">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
+    html += '<div><strong>' + esc(c.name) + '</strong> <span style="color:#718096;font-size:0.85rem">(Since: ' + esc(c.duration) + ')</span></div>';
+    html += '<button onclick="removeComplaint(' + i + ')" style="background:none;border:1px solid #e53e3e;color:#e53e3e;border-radius:4px;padding:2px 10px;cursor:pointer;font-size:0.8rem">Remove</button>';
+    html += '</div>';
+    const complaintFields = COMPLAINTS[c.name] || [];
+    complaintFields.forEach(function (field) {
+      const value = formData[field.id] !== undefined ? formData[field.id] : (field.type === 'checkbox' ? [] : '');
+      const required = field.required ? 'required' : '';
+      const hint = field.hint ? '<div class="hint">' + esc(field.hint) + '</div>' : '';
+      html += '<div class="form-group">';
+      html += '<label for="' + field.id + '">' + esc(field.label) + '</label>';
+      html += hint;
+      switch (field.type) {
+        case 'textarea':
+          html += '<textarea id="' + field.id + '" name="' + field.id + '" ' + required + '>' + esc(value) + '</textarea>';
+          break;
+        case 'select':
+          html += '<select id="' + field.id + '" name="' + field.id + '" ' + required + '>';
+          html += '<option value="">-- Select --</option>';
+          (field.options || []).forEach(function (opt) {
+            html += '<option value="' + esc(opt) + '"' + (value === opt ? ' selected' : '') + '>' + esc(opt) + '</option>';
+          });
+          html += '</select>';
+          break;
+        case 'checkbox':
+          const vals = Array.isArray(value) ? value : [];
+          html += '<div class="checkbox-group">';
+          (field.options || []).forEach(function (opt) {
+            html += '<label><input type="checkbox" name="' + field.id + '" value="' + esc(opt) + '"' + (vals.includes(opt) ? ' checked' : '') + '> ' + esc(opt) + '</label>';
+          });
+          html += '</div>';
+          break;
+        default:
+          html += '<input type="' + (field.type || 'text') + '" id="' + field.id + '" name="' + field.id + '" value="' + esc(value) + '" ' + required + '>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+  return html;
+}
+
+function addComplaint() {
+  const name = document.getElementById('new_complaint_name').value;
+  const duration = document.getElementById('new_complaint_duration').value;
+  if (!name || !duration.trim()) return;
+  if (!formData.complaints) formData.complaints = [];
+  formData.complaints.push({ name: name, duration: duration });
+  document.getElementById('new_complaint_name').value = '';
+  document.getElementById('new_complaint_duration').value = '';
+  refreshComplaints();
+}
+
+function removeComplaint(index) {
+  if (!formData.complaints) return;
+  formData.complaints.splice(index, 1);
+  refreshComplaints();
+}
+
+function refreshComplaints() {
+  const container = document.getElementById('complaint-items-container');
+  if (!container) return;
+  container.innerHTML = renderComplaintItems();
+  attachHandlers();
 }
 
 function esc(str) {

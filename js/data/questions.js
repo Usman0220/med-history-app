@@ -16,14 +16,8 @@ const BASE_STEPS = [
   {
     id: 'chief-complaint',
     title: 'Chief Complaint',
-    fields: [
-      { id: 'cc', label: 'What is the main problem?', type: 'textarea', required: true,
-        hint: 'In the patient\'s own words' },
-      { id: 'duration', label: 'How long has this been present?', type: 'text', required: true },
-      { id: 'onset', label: 'Onset', type: 'select',
-        options: ['Sudden', 'Gradual', 'Intermittent', 'Constant'] },
-      { id: 'severity', label: 'Severity (1-10)', type: 'number', attrs: { min: 1, max: 10 } }
-    ]
+    complaintBuilder: true,
+    description: 'Add presenting complaints with duration. Select a complaint type and fill its specific history details.'
   },
   {
     id: 'hopi',
@@ -147,3 +141,76 @@ const BASE_STEPS = [
     ]
   }
 ];
+
+const COMPLAINTS = {
+  'Fever': [
+    { id: 'fever_duration', label: 'Duration of fever', type: 'text', hint: 'e.g. 3 days, intermittent for 1 week' },
+    { id: 'fever_pattern', label: 'Pattern', type: 'select', options: ['Continuous', 'Intermittent', 'Remittent', 'Relapsing', 'Undulant'] },
+    { id: 'fever_grade', label: 'Grade', type: 'select', options: ['Low grade (<38°C)', 'Moderate (38-39°C)', 'High grade (39-40°C)', 'Pyrexial (>40°C)'] },
+    { id: 'fever_assoc', label: 'Associated symptoms', type: 'checkbox', options: ['Chills', 'Rigors', 'Night sweats', 'Rash', 'Myalgia', 'Arthralgia', 'Headache', 'Photophobia'] },
+    { id: 'fever_response', label: 'Response to antipyretics', type: 'select', options: ['Good', 'Partial', 'Poor', 'Not used'] }
+  ],
+  'Vomiting': [
+    { id: 'vomiting_freq', label: 'Frequency', type: 'text', hint: 'Times per day / total episodes' },
+    { id: 'vomiting_content', label: 'Content', type: 'select', options: ['Undigested food', 'Partially digested food', 'Bilious (green/yellow)', 'Bloody (hematemesis)', 'Coffee-ground', 'Feculent', 'Projectile'] },
+    { id: 'vomiting_timing', label: 'Relation to meals', type: 'select', options: ['Before meals', 'Immediately after meals', '30-60 min after meals', 'Unrelated to meals', 'On waking'] },
+    { id: 'vomiting_assoc', label: 'Associated features', type: 'checkbox', options: ['Nausea', 'Retching', 'Epigastric pain', 'Dizziness', 'Headache', 'Diarrhea', 'Fever', 'Weight loss'] },
+    { id: 'vomiting_relief', label: 'Relieving factors', type: 'text' }
+  ],
+  'Pain': [
+    { id: 'pain_site', label: 'Site', type: 'text', hint: 'Anatomical location' },
+    { id: 'pain_quality', label: 'Quality', type: 'select', options: ['Sharp/stabbing', 'Dull/aching', 'Burning', 'Colicky', 'Throbbing', 'Tearing', 'Cramping', 'Pressure'] },
+    { id: 'pain_radiation', label: 'Radiation', type: 'text', hint: 'Does it travel anywhere?' },
+    { id: 'pain_severity', label: 'Severity (1-10)', type: 'number' },
+    { id: 'pain_aggravating', label: 'Aggravating factors', type: 'text', hint: 'What makes it worse?' },
+    { id: 'pain_relieving', label: 'Relieving factors', type: 'text', hint: 'What makes it better?' },
+    { id: 'pain_assoc', label: 'Associated symptoms', type: 'checkbox', options: ['Nausea', 'Vomiting', 'Fever', 'Sweating', 'Palpitations', 'SOB', 'Dizziness'] }
+  ],
+  'Cough': [
+    { id: 'cough_type', label: 'Type', type: 'select', options: ['Dry', 'Productive', 'Paroxysmal', 'Barking', 'Whooping', 'Nocturnal'] },
+    { id: 'cough_sputum', label: 'Sputum', type: 'select', options: ['None (dry)', 'Clear/mucoid', 'Yellow/green', 'Blood-streaked', 'Rusty', 'Frothy/pink', 'Purulent'] },
+    { id: 'cough_sputum_vol', label: 'Sputum volume', type: 'select', options: ['Scanty', 'Moderate', 'Copious'] },
+    { id: 'cough_timing', label: 'Timing', type: 'select', options: ['Morning', 'Night', 'Throughout day', 'After meals', 'On exertion'] },
+    { id: 'cough_assoc', label: 'Associated symptoms', type: 'checkbox', options: ['Fever', 'SOB', 'Chest pain', 'Hemoptysis', 'Wheeze', 'Sore throat', 'Rhinorrhea', 'Weight loss'] }
+  ],
+  'Headache': [
+    { id: 'ha_site', label: 'Site', type: 'select', options: ['Frontal', 'Temporal', 'Occipital', 'Vertex', 'Diffuse', 'Unilateral', 'Bilateral', 'Behind eyes'] },
+    { id: 'ha_quality', label: 'Quality', type: 'select', options: ['Throbbing/pulsating', 'Tension/band-like', 'Sharp/stabbing', 'Dull/aching', 'Pressure'] },
+    { id: 'ha_onset', label: 'Onset of each episode', type: 'select', options: ['Sudden', 'Gradual', 'Thunderclap'] },
+    { id: 'ha_duration', label: 'Episode duration', type: 'select', options: ['Minutes', 'Hours', 'Days', 'Continuous'] },
+    { id: 'ha_assoc', label: 'Associated symptoms', type: 'checkbox', options: ['Nausea', 'Vomiting', 'Photophobia', 'Phonophobia', 'Aura', 'Visual changes', 'Neck stiffness', 'Fever'] },
+    { id: 'ha_aggravating', label: 'Aggravating factors', type: 'text' },
+    { id: 'ha_relieving', label: 'Relieving factors', type: 'text' }
+  ],
+  'Diarrhea': [
+    { id: 'diarrhea_freq', label: 'Frequency', type: 'text', hint: 'Stools per day' },
+    { id: 'diarrhea_consistency', label: 'Consistency', type: 'select', options: ['Watery', 'Loose', 'Semisolid', 'Bloody/dysenteric', 'Mucoid', 'Rice-watery'] },
+    { id: 'diarrhea_blood', label: 'Blood in stool', type: 'select', options: ['None', 'Fresh blood', 'Dark blood/melena', 'Occult'] },
+    { id: 'diarrhea_tenesmus', label: 'Tenesmus', type: 'select', options: ['Yes', 'No'] },
+    { id: 'diarrhea_assoc', label: 'Associated symptoms', type: 'checkbox', options: ['Abdominal pain', 'Vomiting', 'Fever', 'Urgency', 'Dehydration', 'Weight loss'] },
+    { id: 'diarrhea_exposure', label: 'Recent food/water exposure', type: 'textarea' }
+  ],
+  'Constipation': [
+    { id: 'constipation_freq', label: 'Bowel frequency', type: 'text', hint: 'Stools per week' },
+    { id: 'constipation_dur', label: 'Duration', type: 'text' },
+    { id: 'constipation_stool', label: 'Stool consistency', type: 'select', options: ['Hard/lumpy', 'Pellet-like', 'Difficult to pass', 'Requires straining'] },
+    { id: 'constipation_lax', label: 'Laxative use', type: 'text' },
+    { id: 'constipation_assoc', label: 'Associated symptoms', type: 'checkbox', options: ['Abdominal distension', 'Pain', 'Bloating', 'Nausea', 'Blood with stool', 'Weight loss'] },
+    { id: 'constipation_diet', label: 'Dietary fiber intake', type: 'select', options: ['Poor', 'Adequate', 'High'] }
+  ],
+  'SOB / Dyspnea': [
+    { id: 'sob_onset', label: 'Onset', type: 'select', options: ['Sudden', 'Gradual', 'Acute on chronic'] },
+    { id: 'sob_mrc', label: 'MRC Dyspnea Grade', type: 'select', options: ['Grade 1 (strenuous exercise)', 'Grade 2 (hurrying on level)', 'Grade 3 (walking with peers)', 'Grade 4 (stops after 100m)', 'Grade 5 (at rest)'] },
+    { id: 'sob_position', label: 'Relation to position', type: 'select', options: ['Orthopnea', 'PND', 'No positional change'] },
+    { id: 'sob_nocturnal', label: 'Nocturnal symptoms', type: 'select', options: ['PND', 'Wheeze', 'Cough', 'None'] },
+    { id: 'sob_assoc', label: 'Associated symptoms', type: 'checkbox', options: ['Chest pain', 'Palpitations', 'Cough', 'Wheeze', 'Cyanosis', 'Leg swelling', 'Fever'] }
+  ],
+  'Jaundice': [
+    { id: 'jaundice_onset', label: 'Onset', type: 'select', options: ['Sudden', 'Gradual'] },
+    { id: 'jaundice_urine', label: 'Urine color', type: 'select', options: ['Normal', 'Dark (cola-colored)', 'Orange'] },
+    { id: 'jaundice_stool', label: 'Stool color', type: 'select', options: ['Brown (normal)', 'Pale/clay-colored', 'Variable'] },
+    { id: 'jaundice_pruritus', label: 'Pruritus', type: 'select', options: ['Yes', 'No'] },
+    { id: 'jaundice_assoc', label: 'Associated symptoms', type: 'checkbox', options: ['Fever', 'Pain abdomen', 'Nausea', 'Weight loss', 'Easy bruising', 'Bleeding'] },
+    { id: 'jaundice_risk', label: 'Risk factors', type: 'checkbox', options: ['Alcohol use', 'Blood transfusion', 'IV drug use', 'Travel', 'Hepatotoxic drugs', 'Family history'] }
+  ]
+};
