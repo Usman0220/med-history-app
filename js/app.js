@@ -244,8 +244,6 @@ function copyJSON() {
     const orig = btn.textContent;
     btn.textContent = 'Copied!';
     setTimeout(() => btn.textContent = orig, 2000);
-  }).catch(() => {
-    alert('Failed to copy to clipboard');
   });
 }
 
