@@ -81,7 +81,9 @@ const BASE_STEPS = [
       { id: 'gender', label: 'Gender', type: 'select', options: ['Male', 'Female', 'Other'], required: true },
       { id: 'occupation', label: 'Occupation', type: 'text' },
       { id: 'contact', label: 'Contact Number', type: 'tel' },
-      { id: 'address', label: 'Address', type: 'textarea' }
+      { id: 'address', label: 'Address', type: 'textarea' },
+      { id: 'admitted_via', label: 'Admitted via', type: 'select', options: ['OPD', 'Emergency', 'Referral', 'Ward Transfer', 'Elective Admission', 'Other'] },
+      { id: 'admission_datetime', label: 'Date & Time of Admission', type: 'datetime-local' }
     ]
   },
   {
