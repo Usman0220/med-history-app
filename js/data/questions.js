@@ -1,3 +1,4 @@
+// == BASE STEPS ==
 const BASE_STEPS = [
   {
     id: 'patient-info',
@@ -124,6 +125,32 @@ const BASE_STEPS = [
       { id: 'clinician_name', label: 'Clinician name', type: 'text' },
       { id: 'date', label: 'Date', type: 'date' }
     ]
+  },
+  {
+    id: 'diagnosis',
+    title: 'Diagnosis',
+    fields: [
+      { id: 'dx_primary', label: 'Primary diagnosis', type: 'text' },
+      { id: 'dx_differentials', label: 'Differential diagnoses', type: 'textarea' },
+      { id: 'dx_icd', label: 'ICD-11 code', type: 'text', hint: 'e.g. 4A00.0 for T1DM' },
+      { id: 'dx_certainty', label: 'Diagnostic certainty', type: 'select', options: ['Confirmed', 'Probable', 'Possible', 'Suspected', 'Rule out'] },
+      { id: 'dx_basis', label: 'Basis of diagnosis', type: 'checkbox', options: ['Clinical', 'Laboratory', 'Imaging', 'Histopathology', 'Endoscopy', 'Surgical findings', 'Response to treatment'] },
+      { id: 'dx_notes', label: 'Additional diagnostic notes', type: 'textarea' }
+    ]
+  },
+  {
+    id: 'medications-allergies',
+    title: 'Medications & Allergies',
+    fields: [
+      { id: 'med_current_list', label: 'Current medications (name, dose, route, frequency)', type: 'textarea' },
+      { id: 'med_recent_changes', label: 'Recent medication changes', type: 'textarea' },
+      { id: 'med_iv', label: 'IV fluids / parenteral therapy', type: 'text' },
+      { id: 'allergy_drugs', label: 'Drug allergies', type: 'textarea', hint: 'Drug name and reaction type' },
+      { id: 'allergy_food', label: 'Food allergies', type: 'textarea' },
+      { id: 'allergy_environmental', label: 'Environmental allergies', type: 'textarea' },
+      { id: 'allergy_other', label: 'Other allergies / intolerances', type: 'textarea' },
+      { id: 'adverse_reactions', label: 'Previous adverse drug reactions', type: 'textarea' }
+    ]
   }
 ];
 
@@ -199,3 +226,7 @@ const COMPLAINTS = {
     { id: 'jaundice_risk', label: 'Risk factors', type: 'checkbox', options: ['Alcohol use', 'Blood transfusion', 'IV drug use', 'Travel', 'Hepatotoxic drugs', 'Family history'] }
   ]
 };
+
+const TEACHING={sections:{'patient-info':'Start with demographics. Age, gender, and occupation guide differential diagnosis.','chief-complaint':'Use OLD CARTS: Onset, Location, Duration, Character, Aggravating/Associating factors, Relieving factors, Timing, Severity. Document each complaint in the patient\'s own words.','pmh':'Always screen for DM, HTN, asthma/COPD, TB, jaundice, surgeries. Comorbidities directly affect management and prognosis.','drug-history':'Ask about prescription, OTC, and herbal medications. Poor adherence is common.','family-history':'Ask about DM, HTN, IHD, cancers, mental illness, autoimmune diseases in first-degree relatives.','social-history':'Smoking (pack-years), alcohol (units/week), substance use, occupation, living conditions, travel.','review-systems':'Systematic screening for symptoms patient did not mention. Start general, then each system. Document negatives too.','physical-exam':'Vitals first: BP, HR, RR, Temp, SpO2. Then general exam, then targeted system exam.','assessment-plan':'Synthesize history + exam into a problem list. List differentials in order of likelihood.','diagnosis':'Document primary diagnosis, differentials, and certainty. ICD-11 coding standardizes records.','medications-allergies':'Drug allergies are a leading cause of adverse events. Ask about specific reaction type (rash, anaphylaxis).','clinical-scores':'Scoring tools provide objective risk stratification for admission decisions and treatment planning.'},
+fields:{fever_duration:'Acute < 2 weeks (infection, drug fever). Chronic > 2 weeks (TB, lymphoma, CTD, malignancy).',fever_pattern:'Continuous = lobar pneumonia, typhoid, UTI. Intermittent = malaria, abscess, lymphoma. Remittent = viral. Relapsing = brucellosis, malaria.',fever_grade:'Low grade: TB, occult infection. High grade: bacterial infection, malaria.',cough_type:'Dry: viral, asthma, ILD, ACE-I. Productive: infection, COPD. Paroxysmal: pertussis, asthma.',cough_sputum:'Clear/mucoid: viral, asthma. Yellow/green: bacterial. Rusty: pneumococcal. Frothy pink: pulmonary edema. Blood-streaked: TB, malignancy, bronchiectasis.',pain_site:'Anatomical location guides differential. Use dermatomes for referred pain.',pain_quality:'Colicky: hollow viscus (stone, obstruction). Burning: GERD, peptic. Tearing: aortic dissection. Throbbing: vascular (migraine, abscess).',pain_severity:'1-3 mild, 4-6 moderate, 7-10 severe. Severe pain with normal vitals suggests drug-seeking behavior.',diarrhea_freq:'> 3 loose stools/day. Acute < 2 weeks (infectious). Chronic > 4 weeks (IBD, IBS, malabsorption).',diarrhea_consistency:'Watery: enterotoxin (cholera, ETEC). Bloody/dysenteric: Shigella, Campylobacter, IBD. Rice-watery: cholera.',vomiting_content:'Bilious: obstruction beyond ampulla. Coffee-ground: upper GI bleed. Feculent: distal obstruction. Projectile: increased ICP, pyloric stenosis.',ha_site:'Frontal: sinusitis, tension. Temporal: migraine, temporal arteritis (>50). Occipital: hypertension, cervicogenic. Unilateral: migraine, cluster.',ha_quality:'Throbbing: migraine, fever. Band-like: tension. Thunderclap: SAH, RCVS.',sob_mrc:'Grade 2+ indicates significant impairment. Grade 4-5: severe limitation, investigate urgently.',jaundice_urine:'Dark urine appears before jaundice in hepatitis. Pale stool suggests obstructive jaundice.',vitals_bp:'Normal < 120/80. Hypertension: > 130/80. Hypotension: < 90/60. MAP target > 65 in sepsis.',vitals_hr:'Normal 60-100. Tachycardia: fever, pain, PE, sepsis, dehydration, arrhythmia. Bradycardia: athlete, beta-blocker, heart block, increased ICP.',vitals_temp:'Normal 36.5-37.5 C. Fever > 38.3. Hypothermia < 35.0 C (sepsis, exposure, myxedema).',selected_condition:'Select a condition to get disease-specific history questions tailored to clinical context.'},
+differentials:{Fever:['Infectious (viral, bacterial, fungal, parasitic)','Inflammatory/Autoimmune (SLE, Stills, vasculitis)','Neoplastic (lymphoma, leukemia, RCC)','Drug fever','Endocrine (thyroid storm, pheochromocytoma)','Factitious / Psychogenic'],Cough:['UPPER: sinusitis, post-nasal drip','LOWER: bronchitis, pneumonia, COPD, asthma','OTHER: GERD, ACE-I, ILD, TB, lung cancer, heart failure'],Pain:['Somatic (skin, muscle, bone) — well-localized','Visceral (organ) — vague, referred','Neuropathic (nerve) — burning, shooting','Referred pain — distant from source but same dermatome'],Headache:['Primary: migraine, tension, cluster, TACs','Secondary: sinusitis, meningitis, SAH, tumor, temporal arteritis (>50)','Red flags (SNOOP4): Systemic, Neurologic, Onset thunderclap, Older >50, Progression, Precipitated by Valsalva, Postural'],Diarrhea:['Acute: viral (rotavirus, norovirus), bacterial (E. coli, Shigella, Campylobacter), parasitic (Giardia)','Chronic: IBS, IBD (Crohns, UC), malabsorption (celiac), microscopic colitis','Antibiotic-associated: C. difficile'],Vomiting:['GI: gastritis, pancreatitis, obstruction, hepatitis','CNS: increased ICP, migraine, vestibular, meningitis','Metabolic: DKA, uremia, hypercalcemia, pregnancy','Drugs: chemotherapy, opioids, NSAIDs'],'SOB / Dyspnea':['Respiratory: asthma, COPD, pneumonia, PE, pneumothorax','Cardiac: heart failure (left), ischemia, pericarditis','Metabolic: acidosis (DKA, sepsis)','Anxiety: panic attack','Anemia'],Constipation:['Primary: idiopathic, IBS-C, slow transit','Secondary: hypothyroidism, hypercalcemia, diabetes, Parkinsons','Drugs: opioids, CCBs, iron, anticholinergics','Red flags: blood, weight loss, FHx colon cancer, age > 50 new onset'],Jaundice:['PRE-hepatic: hemolysis (unconjugated)','HEPATIC: hepatitis (viral, alcoholic, drug), cirrhosis (conjugated)','POST-hepatic: obstruction (stone, stricture, tumor) (conjugated)']}};

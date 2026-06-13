@@ -1,3 +1,4 @@
+// == SURGERY ==
 const SURGERY_QUESTIONS = [
   {
     id: 'surgical-history',
@@ -158,6 +159,69 @@ const SURGERY_DISEASES = {
         options: ['Dysphagia', 'Hoarseness', 'SOB / stridor', 'Cough', 'None'] },
       { id: 'thyroid_voice', label: 'Voice change (recurrent laryngeal nerve)', type: 'select', options: ['No', 'Yes — hoarseness', 'Yes — loss of voice'] },
       { id: 'thyroid_imaging', label: 'Imaging / FNAC findings (if done)', type: 'textarea' }
+    ]}
+  ],
+  'fistula_in_ano': [
+    { id: 'surg-fistula', title: 'Fistula-in-Ano — History', fields: [
+      { id: 'fistula_duration', label: 'Duration of symptoms', type: 'text' },
+      { id: 'fistula_onset', label: 'Onset', type: 'select', options: ['After abscess drainage', 'Spontaneous', 'Post-surgical', 'Post-traumatic', 'Associated with IBD'] },
+      { id: 'fistula_discharge', label: 'Discharge type', type: 'select', options: ['Serous', 'Purulent', 'Blood-stained', 'Feculent', 'Intermittent/nil'] },
+      { id: 'fistula_bleeding', label: 'Bleeding per rectum', type: 'select', options: ['No', 'Yes — during defecation', 'Yes — unrelated to stools'] },
+      { id: 'fistula_pain', label: 'Pain', type: 'select', options: ['None', 'Mild', 'Moderate with defecation', 'Severe / constant'] },
+      { id: 'fistula_abscess', label: 'Recurrent perianal abscess?', type: 'select', options: ['No', 'Yes — once', 'Yes — recurrent'] },
+      { id: 'fistula_pruritus', label: 'Perianal itching / irritation', type: 'select', options: ['No', 'Mild', 'Severe'] },
+      { id: 'fistula_incontinence', label: 'Fecal incontinence?', type: 'select', options: ['No', 'Gas only', 'Liquid stool', 'Solid stool'] },
+      { id: 'fistula_ibd', label: 'History suggestive of IBD (Crohn\'s / UC)', type: 'checkbox',
+        options: ['Chronic diarrhea', 'Abdominal pain', 'Weight loss', 'Blood in stool', 'Extra-intestinal manifestations', 'None'] },
+      { id: 'fistula_tb', label: 'Risk factors for TB', type: 'checkbox',
+        options: ['Chronic cough', 'Weight loss', 'Night sweats', 'TB contact', 'Past TB treatment', 'None'] },
+      { id: 'fistula_exam', label: 'Examination findings (opening, tract, Goodsall\'s rule)', type: 'textarea',
+        hint: 'Number of openings, position (anterior/posterior), distance from anal verge' },
+      { id: 'fistula_imaging', label: 'Imaging (MRI fistulogram / EUA findings)', type: 'textarea' }
+    ]}
+  ],
+  'varicose_veins': [
+    { id: 'surg-varicose', title: 'Varicose Veins — History', fields: [
+      { id: 'vv_duration', label: 'Duration of symptoms', type: 'text' },
+      { id: 'vv_side', label: 'Side affected', type: 'select', options: ['Right leg', 'Left leg', 'Bilateral'] },
+      { id: 'vv_veins', label: 'Visible veins / tortuosity', type: 'select', options: ['Mild spider veins', 'Moderate varicosities', 'Severe / rope-like', 'Not visible'] },
+      { id: 'vv_symptoms', label: 'Symptoms', type: 'checkbox',
+        options: ['Heaviness / aching', 'Pain (worse on standing)', 'Itching', 'Night cramps', 'Swelling / edema', 'Restless legs', 'None'] },
+      { id: 'vv_aggravating', label: 'Aggravating factors', type: 'checkbox',
+        options: ['Prolonged standing', 'Hot weather', 'Menstruation', 'Afternoon/evening', 'Pregnancy'] },
+      { id: 'vv_relieving', label: 'Relieving factors', type: 'checkbox',
+        options: ['Elevation of legs', 'Walking / exercise', 'Compression stockings', 'Lying flat'] },
+      { id: 'vv_ceap', label: 'CEAP Clinical Classification', type: 'select',
+        options: ['C0 — No visible veins', 'C1 — Telangiectasias / spider veins', 'C2 — Varicose veins', 'C3 — Edema', 'C4a — Pigmentation / eczema', 'C4b — Lipodermatosclerosis / atrophie blanche', 'C5 — Healed ulcer', 'C6 — Active venous ulcer'] },
+      { id: 'vv_complications', label: 'Complications experienced', type: 'checkbox',
+        options: ['Superficial thrombophlebitis', 'Bleeding from varicosity', 'Venous ulcer', 'Lipodermatosclerosis', 'None'] },
+      { id: 'vv_ulcer_history', label: 'History of venous ulcer?', type: 'select', options: ['No', 'Yes — healed', 'Yes — active', 'Recurrent'] },
+      { id: 'vv_previous_treatment', label: 'Previous treatment', type: 'checkbox',
+        options: ['Compression stockings', 'Sclerotherapy', 'Laser / RFA', 'Stripping / ligation', 'None'] },
+      { id: 'vv_occupation', label: 'Occupation involving prolonged standing?', type: 'select', options: ['No', 'Yes — <4 hrs/day', 'Yes — 4-8 hrs/day', 'Yes — >8 hrs/day'] },
+      { id: 'vv_family', label: 'Family history of varicose veins', type: 'select', options: ['No', 'Yes — 1st degree', 'Yes — 2nd degree', 'Unknown'] },
+      { id: 'vv_pregnancy', label: 'Number of pregnancies (if female)', type: 'number', attrs: { min: 0 } }
+    ]}
+  ],
+  'dvt': [
+    { id: 'surg-dvt', title: 'Deep Vein Thrombosis — History', fields: [
+      { id: 'dvt_side', label: 'Side affected', type: 'select', options: ['Right', 'Left', 'Bilateral'] },
+      { id: 'dvt_site', label: 'Clinical level of DVT', type: 'select', options: ['Distal (calf veins)', 'Proximal (popliteal / femoral)', 'Iliofemoral', 'Uncertain'] },
+      { id: 'dvt_onset', label: 'Onset of symptoms', type: 'select', options: ['Sudden (<24 hours)', 'Subacute (1-7 days)', 'Gradual (>1 week)'] },
+      { id: 'dvt_symptoms', label: 'Symptoms', type: 'checkbox',
+        options: ['Leg pain', 'Swelling', 'Redness / erythema', 'Warmth', 'Tenderness', 'Heaviness', 'None'] },
+      { id: 'dvt_homans', label: 'Homan\'s sign (calf pain on dorsiflexion)', type: 'select', options: ['Positive', 'Negative', 'Not examined'] },
+      { id: 'dvt_calf_diameter', label: 'Calf diameter difference (cm)', type: 'text', hint: 'Measure 10cm below tibial tuberosity' },
+      { id: 'dvt_risk_factors', label: 'Risk factors', type: 'checkbox',
+        options: ['Recent surgery (<4 weeks)', 'Immobilization (>3 days)', 'Long travel (>4h)', 'Active cancer', 'Pregnancy / postpartum', 'OCP / HRT', 'Obesity (BMI >30)', 'Smoking', 'Previous DVT/PE', 'Thrombophilia', 'Age >60', 'None'] },
+      { id: 'dvt_prior_dvt', label: 'Prior history of DVT / PE?', type: 'select', options: ['No', 'Yes — DVT', 'Yes — PE', 'Yes — both'] },
+      { id: 'dvt_family_dvt', label: 'Family history of DVT / PE?', type: 'select', options: ['No', 'Yes — 1st degree', 'Yes — 2nd degree', 'Unknown'] },
+      { id: 'dvt_anticoagulation', label: 'Current / recent anticoagulation', type: 'textarea', hint: 'Drug, dose, duration' },
+      { id: 'dvt_wells', label: 'Wells score for DVT (calculated in scoring section)', type: 'text' },
+      { id: 'dvt_imaging', label: 'Doppler ultrasound findings', type: 'textarea', hint: 'Proximal/distal, occlusive/non-occlusive, chronic changes' },
+      { id: 'dvt_d_dimer', label: 'D-dimer (if done)', type: 'text' },
+      { id: 'dvt_symptoms_pe', label: 'Symptoms suggestive of PE (SOB, chest pain, hemoptysis)', type: 'checkbox',
+        options: ['SOB', 'Chest pain (pleuritic)', 'Hemoptysis', 'Syncope', 'Tachycardia', 'None'] }
     ]}
   ]
 };

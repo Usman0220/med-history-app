@@ -1,53 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MedHistory - Medical History Assistant</title>
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedHistory - Medical History Assistant</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2b6cb0">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="app-container">
-    <header>
-      <h1>MedHistory</h1>
-      <p>Medical history documentation form</p>
-    </header>
-
-    <div id="specialty-selector" class="card">
-      <h2>Select Specialty</h2>
-      <div class="specialty-grid">
-        <button class="specialty-btn" onclick="startAssessment('surgery')">
-          <span>Surgery</span>
-        </button>
-        <button class="specialty-btn" onclick="startAssessment('medicine')">
-          <span>Medicine</span>
-        </button>
-        <button class="specialty-btn" onclick="startAssessment('paediatric')">
-          <span>Paediatrics</span>
-        </button>
-        <button class="specialty-btn" onclick="startAssessment('gynaeobs')">
-          <span>Gynae / Obstetrics</span>
-        </button>
-      </div>
-    </div>
-
-    <div id="form-view" class="hidden">
-      <div class="form-toolbar">
-        <div class="toolbar-info">
-          <span id="toolbar-specialty"></span>
-          <span id="toolbar-condition" class="toolbar-condition"></span>
-        </div>
-        <div id="realtime-clock" class="toolbar-clock"></div>
-      </div>
-      <div id="form-content"></div>
-    </div>
-  </div>
-
-  <script src="js/data/questions.js"></script>
-  <script src="js/specialties/surgery.js"></script>
-  <script src="js/specialties/medicine.js"></script>
-  <script src="js/specialties/paediatric.js"></script>
-  <script src="js/specialties/gynaeobs.js"></script>
-  <script src="js/app.js"></script>
+<div class="app-container">
+<header>
+<h1>MedHistory</h1>
+<p>Medical history documentation form</p>
+<button id="teach-toggle" onclick="toggleTeaching()" style="border:1px solid #cbd5e0;border-radius:4px;padding:4px 10px;font-size:1rem;cursor:pointer;background:transparent;position:absolute;top:16px;right:52px" title="Teaching mode (shows clinical hints)">&#128214;</button>
+<button id="dark-toggle" onclick="toggleDarkMode()" style="background:none;border:1px solid #cbd5e0;border-radius:4px;padding:4px 10px;font-size:1rem;cursor:pointer;position:absolute;top:16px;right:16px" title="Toggle dark mode">&#9790;</button>
+</header>
+<div id="restore-banner" class="card hidden" style="border-left:4px solid #dd6b20;background:#fffaf0"></div>
+<div id="specialty-selector" class="card">
+<h2>Select Specialty</h2>
+<div class="specialty-grid">
+<button class="specialty-btn" onclick="startAssessment('surgery')"><span>Surgery</span></button>
+<button class="specialty-btn" onclick="startAssessment('medicine')"><span>Medicine</span></button>
+<button class="specialty-btn" onclick="startAssessment('paediatric')"><span>Paediatrics</span></button>
+<button class="specialty-btn" onclick="startAssessment('gynaeobs')"><span>Gynae / Obstetrics</span></button>
+<button class="specialty-btn" onclick="startAssessment('ortho')"><span>Orthopedics</span></button>
+<button class="specialty-btn" onclick="startAssessment('ent')"><span>ENT</span></button>
+<button class="specialty-btn" onclick="startAssessment('ophthalmology')"><span>Ophthalmology</span></button>
+<button class="specialty-btn" onclick="startAssessment('psych')"><span>Psychiatry</span></button>
+<button class="specialty-btn" onclick="startAssessment('derm')"><span>Dermatology</span></button>
+</div>
+</div>
+<div id="history-list" class="card"></div>
+<div style="text-align:center;margin-bottom:16px">
+<button onclick="exportHistory()" style="background:none;border:1px solid #2b6cb0;color:#2b6cb0;border-radius:4px;padding:6px 14px;font-size:.85rem;cursor:pointer;margin-right:8px">Export History</button>
+<button onclick="importHistory()" style="background:none;border:1px solid #2b6cb0;color:#2b6cb0;border-radius:4px;padding:6px 14px;font-size:.85rem;cursor:pointer">Import History</button>
+</div>
+<div id="form-view" class="hidden">
+<div class="form-toolbar">
+<button onclick="resetApp()" style="background:none;border:none;color:#2b6cb0;font-size:1.2rem;cursor:pointer;padding:0 6px 0 0" title="Back to specialties">&larr;</button>
+<div class="toolbar-info">
+<span id="toolbar-specialty"></span>
+<span id="toolbar-condition" class="toolbar-condition"></span>
+</div>
+<div id="realtime-clock" class="toolbar-clock"></div>
+</div>
+<div id="form-content"></div>
+</div>
+</div>
+<script src="js/data/questions.js"></script>
+<script src="js/specialties/surgery.js"></script>
+<script src="js/specialties/medicine.js"></script>
+<script src="js/specialties/paediatric.js"></script>
+<script src="js/specialties/gynaeobs.js"></script>
+<script src="js/specialties/ortho.js"></script>
+<script src="js/specialties/ent.js"></script>
+<script src="js/specialties/ophthalmology.js"></script>
+<script src="js/specialties/psych.js"></script>
+<script src="js/specialties/derm.js"></script>
+<script src="js/app.js"></script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
+applyDarkMode();
+if(localStorage.getItem('medHistory_teaching')==='1'){var tb=document.getElementById('teach-toggle');if(tb){tb.style.background='#dd6b20';tb.style.color='#fff';}}</script>
 </body>
 </html>

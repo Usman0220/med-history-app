@@ -1,0 +1,13 @@
+{
+  "name": "MedHistory - Medical History Assistant",
+  "short_name": "MedHistory",
+  "description": "Medical history documentation form for medical professionals",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f0f4f8",
+  "theme_color": "#2b6cb0",
+  "icons": [
+    { "src": "icon-192.svg", "type": "image/svg+xml", "sizes": "192x192" },
+    { "src": "icon-512.svg", "type": "image/svg+xml", "sizes": "512x512" }
+  ]
+}
